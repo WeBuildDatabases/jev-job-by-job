@@ -25,7 +25,7 @@ We wrote one test per job, using examples different from TypeSafe's: CRM syncs, 
 - Round 2 was harder stress cases, written after round 1 proved too easy.
 - Round 3 tested the obvious remedies.
 
-Outcomes decided by ordinary code (exact quote matching, calendar maths) are labelled separately from Jev's judgments. The model was pinned to `jev-1.14.0`.
+Outcomes decided by ordinary code (exact quote matching, calendar math) are labeled separately from Jev's judgments. The model was pinned to `jev-1.14.0`.
 
 ## Reproduce
 
@@ -49,6 +49,6 @@ Each command replays its round from `tests/results/cache.jsonl`. Any changed or 
 | `tests/make_images.py` | Draws the synthetic invoices; ground truth comes from the drawing code |
 | `tests/results/` | Results, the response cache, lock fingerprints, and copies of the locked test files |
 
-## Licence and attribution
+## License and attribution
 
-Cookbook summaries describe TypeSafe's public documentation at docs.typesafe.ai, read on 28 October 2026. Figures quoted from it are TypeSafe's. All companies, people and documents in our tests are invented.
+Cookbook summaries describe TypeSafe's public documentation at docs.typesafe.ai, read on October 28, 2026. Figures quoted from it are TypeSafe's. All companies, people and documents in our tests are invented.

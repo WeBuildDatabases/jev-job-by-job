@@ -97,7 +97,7 @@ Everything here is generated from `ARTICLE.md` by `build_wordpress.py`. Edit the
 5. Check: the scoreboard links jump to their sections, the "View the prompts" link in the intro lands on the first prompt block, the 21 "What we asked Jev" blocks are open and collapsible, and the pull quote has no background.
 
 ## Notes
-- Two references need a home before publishing: the "How we tested" section links to `PROMPTS.md` (a relative link that will 404 on the live site) and mentions `tests/results/LOCKS.md` and "the published files". Either point them at the public location Dan chooses (a repo or uploaded files) or ask Dan to cut those sentences.
+- The three outbound links in "How we tested" point at the public repo, https://github.com/WeBuildDatabases/jev-job-by-job. No relative links remain.
 - The `<details>` and `id` attributes must survive: use a Custom HTML block or the Code editor, not the visual editor, which strips them.
 - Headings carry ids generated from their text (for example `#2-pick-the-right-tool-for-an-ai-agent-or-none`). If the theme rewrites heading ids, re-point the scoreboard links or keep the explicit ids.
 - The post body on the current theme runs about 1,285px wide; cap `.jev-article` near 760px for an article this long.
