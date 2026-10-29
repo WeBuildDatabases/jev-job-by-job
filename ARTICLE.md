@@ -70,10 +70,10 @@ We work on database problems: enriching records, matching duplicates, and findin
    - *Round 3* tested the two obvious fixes for what Round 2 exposed, locked at 23:37 UTC (`a7f69e84…f1949f6f`).
 5. **We kept code's work separate from Jev's.** Some outcomes are decided by ordinary code, such as an exact quote match or a calendar calculation. We label those so Jev doesn't get credit, or blame, for them.
    - One analysis was run after locking: the menu-exit-only replay in job 1, which used cached answers.
-   - One change was made after locking, for publishing safety. Two test messages contained made-up credentials realistic enough to trip code-hosting secret scanners. We swapped them for obviously fake ones and re-ran both; both still passed (details in `tests/results/LOCKS.md`).
-6. **We pinned the exact model, `jev-1.14.0`**, and cached every response, so anyone can replay all of it for free from the published files.
+   - One change was made after locking, for publishing safety. Two test messages contained made-up credentials realistic enough to trip code-hosting secret scanners. We swapped them for obviously fake ones and re-ran both; both still passed (details in [LOCKS.md](https://github.com/WeBuildDatabases/jev-job-by-job/blob/main/tests/results/LOCKS.md)).
+6. **We pinned the exact model, `jev-1.14.0`**, and cached every response, so anyone can replay all of it for free from [the published files](https://github.com/WeBuildDatabases/jev-job-by-job).
 
-The side-by-side of our questions with the cookbooks' own wording is in [PROMPTS.md](PROMPTS.md).
+The side-by-side of our questions with the cookbooks' own wording is in [PROMPTS.md](https://github.com/WeBuildDatabases/jev-job-by-job/blob/main/PROMPTS.md).
 
 **What these results are *not*.** Each job has between 3 and 37 hand-written examples. These are illustrations, not benchmarks, so we say "13 of 15" rather than "87% accurate." Where it matters most (reranking, record matching and "is the answer even here?"), we also cite our earlier tests on public benchmark data with hundreds or thousands of examples.
 
