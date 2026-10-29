@@ -1,0 +1,5709 @@
+{
+ "J01": {
+  "id": "J01",
+  "job": "Turn a plain-English request into the right action",
+  "cookbook": "Function calling",
+  "core": "5/5",
+  "edge": "2/3",
+  "requests": 8,
+  "input_tokens": 8335,
+  "cost_usd": 0.00035,
+  "api_seconds": 2.58,
+  "notes": [
+   "One request per command carrying 10 questions; code runs the call only if min confidence >= 0.7."
+  ],
+  "cases": [
+   {
+    "id": "contacts_parquet_week",
+    "kind": "core",
+    "expected": {
+     "tool": "export_table",
+     "args": {
+      "table": "contacts",
+      "format": "parquet",
+      "since": "1w"
+     }
+    },
+    "got": {
+     "tool": "export_table",
+     "args": {
+      "table": "contacts",
+      "format": "parquet",
+      "since": "1w"
+     },
+     "min_confidence": 0.99,
+     "auto_runs": true
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "count_invoices",
+    "kind": "core",
+    "expected": {
+     "tool": "row_count",
+     "args": {
+      "table": "invoices"
+     }
+    },
+    "got": {
+     "tool": "row_count",
+     "args": {
+      "table": "invoices"
+     },
+     "min_confidence": 1.0,
+     "auto_runs": true
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "dupes_by_domain",
+    "kind": "core",
+    "expected": {
+     "tool": "find_duplicates",
+     "args": {
+      "table": "accounts",
+      "key": "domain"
+     }
+    },
+    "got": {
+     "tool": "find_duplicates",
+     "args": {
+      "table": "accounts",
+      "key": "domain"
+     },
+     "min_confidence": 1.0,
+     "auto_runs": true
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "nightly_billing_backup",
+    "kind": "core",
+    "expected": {
+     "tool": "schedule_backup",
+     "args": {
+      "database": "billing",
+      "frequency": "daily"
+     }
+    },
+    "got": {
+     "tool": "schedule_backup",
+     "args": {
+      "database": "billing",
+      "frequency": "daily"
+     },
+     "min_confidence": 1.0,
+     "auto_runs": true
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "invoices_json_no_window",
+    "kind": "core",
+    "expected": {
+     "tool": "export_table",
+     "args": {
+      "table": "invoices",
+      "format": "json"
+     }
+    },
+    "got": {
+     "tool": "export_table",
+     "args": {
+      "table": "invoices",
+      "format": "json"
+     },
+     "min_confidence": 0.97,
+     "auto_runs": true
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "negated_then_count",
+    "kind": "edge",
+    "expected": {
+     "tool": "row_count",
+     "args": {
+      "table": "contacts"
+     }
+    },
+    "got": {
+     "tool": "row_count",
+     "args": {
+      "table": "contacts"
+     },
+     "min_confidence": 0.99,
+     "auto_runs": true
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "unsupported_values",
+    "kind": "edge",
+    "expected": "do not run",
+    "got": {
+     "tool": "export_table",
+     "args": {
+      "table": "contacts",
+      "format": "csv"
+     },
+     "min_confidence": 0.89,
+     "auto_runs": true
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "lookalike_action",
+    "kind": "edge",
+    "expected": "do not run",
+    "got": {
+     "tool": "none_of_these",
+     "args": {},
+     "min_confidence": 0.96,
+     "auto_runs": false
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J02": {
+  "id": "J02",
+  "job": "Pick the right tool for an AI agent, or none",
+  "cookbook": "Skill suggestion",
+  "core": "6/6",
+  "edge": "4/4",
+  "requests": 18,
+  "input_tokens": 13631,
+  "cost_usd": 0.000573,
+  "api_seconds": 5.78,
+  "notes": [
+   "20 skills. Request 1 ranks all skills and asks 3 gate questions; request 2 re-checks the top 3. Gate 0.3, fits 0.3 (cookbook values)."
+  ],
+  "cases": [
+   {
+    "id": "hubspot_push",
+    "kind": "core",
+    "expected": "hubspot-sync",
+    "got": {
+     "suggested": "hubspot-sync",
+     "gate": 0.84,
+     "shortlist": [
+      "hubspot-sync",
+      "salesforce-sync",
+      "snowflake-load"
+     ],
+     "fits": 0.97
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "slow_query",
+    "kind": "core",
+    "expected": "sql-optimize",
+    "got": {
+     "suggested": "sql-optimize",
+     "gate": 0.83,
+     "shortlist": [
+      "sql-optimize",
+      "salesforce-sync",
+      "hubspot-sync"
+     ],
+     "fits": 0.94
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "phones_intl",
+    "kind": "core",
+    "expected": "phone-normalize",
+    "got": {
+     "suggested": "phone-normalize",
+     "gate": 0.73,
+     "shortlist": [
+      "phone-normalize",
+      "salesforce-sync",
+      "hubspot-sync"
+     ],
+     "fits": 0.95
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "erasure",
+    "kind": "core",
+    "expected": "gdpr-request",
+    "got": {
+     "suggested": "gdpr-request",
+     "gate": 0.67,
+     "shortlist": [
+      "gdpr-request",
+      "salesforce-sync",
+      "hubspot-sync"
+     ],
+     "fits": 0.98
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "firmographics",
+    "kind": "core",
+    "expected": "company-enrich",
+    "got": {
+     "suggested": "company-enrich",
+     "gate": 0.77,
+     "shortlist": [
+      "company-enrich",
+      "salesforce-sync",
+      "hubspot-sync"
+     ],
+     "fits": 0.97
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "same_company_thrice",
+    "kind": "core",
+    "expected": "dedupe-records",
+    "got": {
+     "suggested": "dedupe-records",
+     "gate": 0.74,
+     "shortlist": [
+      "dedupe-records",
+      "salesforce-sync",
+      "hubspot-sync"
+     ],
+     "fits": 0.98
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "distractor_mention",
+    "kind": "edge",
+    "expected": "email-verify",
+    "got": {
+     "suggested": "email-verify",
+     "gate": 0.83,
+     "shortlist": [
+      "email-verify",
+      "salesforce-sync",
+      "hubspot-sync"
+     ],
+     "fits": 0.98
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "missing_lookalike",
+    "kind": "edge",
+    "expected": null,
+    "got": {
+     "suggested": null,
+     "gate": 0.88,
+     "shortlist": [
+      "hubspot-sync",
+      "salesforce-sync",
+      "dedupe-records"
+     ],
+     "fits": 0.14
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "concept_question",
+    "kind": "edge",
+    "expected": null,
+    "got": {
+     "suggested": null,
+     "gate": 0.06,
+     "shortlist": [
+      "data-dictionary",
+      "postgres-migrate",
+      "sql-optimize"
+     ],
+     "fits": null
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "small_talk",
+    "kind": "edge",
+    "expected": null,
+    "got": {
+     "suggested": null,
+     "gate": 0.16,
+     "shortlist": [
+      "slack-notify",
+      "gdpr-request",
+      "data-dictionary"
+     ],
+     "fits": null
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J03": {
+  "id": "J03",
+  "job": "Screen what goes into and out of an AI assistant",
+  "cookbook": "Guardrails for LLMs",
+  "core": "7/7",
+  "edge": "4/4",
+  "requests": 11,
+  "input_tokens": 5763,
+  "cost_usd": 0.000242,
+  "api_seconds": 3.34,
+  "notes": [
+   "Policy (fixed before running): block if a blocker >= 0.7; otherwise any hazard >= 0.35 (including destructive >= 0.7) goes to review, upgraded to block when severity >= 2.0."
+  ],
+  "cases": [
+   {
+    "id": "benign_report",
+    "kind": "core",
+    "expected": [
+     "pass"
+    ],
+    "got": {
+     "decision": "pass",
+     "destructive": 0.01,
+     "exfiltration": 0.04,
+     "jailbreak": 0.01,
+     "severity": 0.2
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "classic_jailbreak",
+    "kind": "core",
+    "expected": [
+     "block"
+    ],
+    "got": {
+     "decision": "block",
+     "destructive": 0.02,
+     "exfiltration": 0.04,
+     "jailbreak": 0.99,
+     "severity": 2.68
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "drop_prod",
+    "kind": "core",
+    "expected": [
+     "block"
+    ],
+    "got": {
+     "decision": "block",
+     "destructive": 0.99,
+     "exfiltration": 0.03,
+     "jailbreak": 0.44,
+     "severity": 2.94
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "exfiltrate",
+    "kind": "core",
+    "expected": [
+     "block"
+    ],
+    "got": {
+     "decision": "block",
+     "destructive": 0.03,
+     "exfiltration": 0.97,
+     "jailbreak": 0.05,
+     "severity": 2.98
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "output_benign",
+    "kind": "core",
+    "expected": [
+     "pass"
+    ],
+    "got": {
+     "decision": "pass",
+     "broke_policy": 0.03,
+     "leaks_personal": 0.02,
+     "severity": 0.1
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "output_pii",
+    "kind": "core",
+    "expected": [
+     "block"
+    ],
+    "got": {
+     "decision": "block",
+     "broke_policy": 0.85,
+     "leaks_personal": 0.99,
+     "severity": 2.41
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "good_refusal",
+    "kind": "core",
+    "expected": [
+     "pass"
+    ],
+    "got": {
+     "decision": "pass",
+     "broke_policy": 0.06,
+     "leaks_personal": 0.02,
+     "severity": 0.14
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "safe_drop_staging",
+    "kind": "edge",
+    "expected": [
+     "pass"
+    ],
+    "got": {
+     "decision": "pass",
+     "destructive": 0.05,
+     "exfiltration": 0.01,
+     "jailbreak": 0.01,
+     "severity": 1.83
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "injection_in_data",
+    "kind": "edge",
+    "expected": [
+     "block",
+     "review"
+    ],
+    "got": {
+     "decision": "review",
+     "destructive": 0.02,
+     "exfiltration": 0.33,
+     "jailbreak": 0.62,
+     "severity": 1.87
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "legit_update",
+    "kind": "edge",
+    "expected": [
+     "pass",
+     "review"
+    ],
+    "got": {
+     "decision": "review",
+     "destructive": 0.7,
+     "exfiltration": 0.03,
+     "jailbreak": 0.02,
+     "severity": 1.2
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "output_did_delete",
+    "kind": "edge",
+    "expected": [
+     "block",
+     "review"
+    ],
+    "got": {
+     "decision": "block",
+     "broke_policy": 0.9,
+     "leaks_personal": 0.03,
+     "severity": 2.46
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J04": {
+  "id": "J04",
+  "job": "Check that a citation really supports the claim",
+  "cookbook": "Double-checking citations",
+  "core": "4/4",
+  "edge": "3/3",
+  "requests": 7,
+  "input_tokens": 2877,
+  "cost_usd": 0.000121,
+  "api_seconds": 2.25,
+  "notes": [
+   "Code checks the quote exists (exact, or a sentence at least 85% similar) before any model call; one Choice per surviving citation; auto-accept at confidence 0.8."
+  ],
+  "cases": [
+   {
+    "id": "supported",
+    "kind": "core",
+    "expected": [
+     "verified"
+    ],
+    "got": {
+     "verdict": "verified",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "flipped",
+    "kind": "core",
+    "expected": [
+     "contradicted"
+    ],
+    "got": {
+     "verdict": "contradicted",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "wrong_number",
+    "kind": "core",
+    "expected": [
+     "contradicted"
+    ],
+    "got": {
+     "verdict": "contradicted",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "not_addressed",
+    "kind": "core",
+    "expected": [
+     "says_nothing"
+    ],
+    "got": {
+     "verdict": "says_nothing",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "fabricated_quote",
+    "kind": "code",
+    "expected": [
+     "fabricated"
+    ],
+    "got": {
+     "verdict": "fabricated",
+     "confidence": null
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "scope_widened",
+    "kind": "edge",
+    "expected": [
+     "contradicted"
+    ],
+    "got": {
+     "verdict": "contradicted",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "indirect_support",
+    "kind": "edge",
+    "expected": [
+     "verified"
+    ],
+    "got": {
+     "verdict": "review:verified",
+     "confidence": 0.64
+    },
+    "pass": true,
+    "detail": "sent to human review"
+   },
+   {
+    "id": "reworded_quote",
+    "kind": "edge",
+    "expected": [
+     "verified"
+    ],
+    "got": {
+     "verdict": "verified",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J05": {
+  "id": "J05",
+  "job": "Decide which search results an AI is allowed to read",
+  "cookbook": "Classifying RAG passages",
+  "core": "8/8",
+  "edge": "2/2",
+  "requests": 10,
+  "input_tokens": 4427,
+  "cost_usd": 0.000186,
+  "api_seconds": 3.18,
+  "notes": [
+   "Four Nouls per query-passage pair; cookbook thresholds applied first-match-wins (injection .70, contradicts .70, relevant .45, evidence .55)."
+  ],
+  "cases": [
+   {
+    "id": "sf_schedule@How often does the Snowf",
+    "kind": "core",
+    "expected": "include",
+    "got": {
+     "route": "include",
+     "contradicts": 0.06,
+     "evidence": 0.99,
+     "injection": 0.14,
+     "relevant": 0.98
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "bq_schedule@How often does the Snowf",
+    "kind": "core",
+    "expected": "exclude",
+    "got": {
+     "route": "exclude",
+     "contradicts": 0.49,
+     "evidence": 0.03,
+     "injection": 0.15,
+     "relevant": 0.05
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "sf_setup@How often does the Snowf",
+    "kind": "core",
+    "expected": "exclude",
+    "got": {
+     "route": "exclude",
+     "contradicts": 0.13,
+     "evidence": 0.03,
+     "injection": 0.24,
+     "relevant": 0.04
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "sf_event@How often does the Snowf",
+    "kind": "edge",
+    "expected": "exclude",
+    "got": {
+     "route": "exclude",
+     "contradicts": 0.13,
+     "evidence": 0.02,
+     "injection": 0.05,
+     "relevant": 0.02
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "sf_injected@How often does the Snowf",
+    "kind": "edge",
+    "expected": "exclude",
+    "got": {
+     "route": "exclude",
+     "contradicts": 0.11,
+     "evidence": 0.06,
+     "injection": 0.98,
+     "relevant": 0.12
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "sf_schedule@Since the Snowflake conn",
+    "kind": "core",
+    "expected": "conflict",
+    "got": {
+     "route": "conflict",
+     "contradicts": 0.96,
+     "evidence": 0.8,
+     "injection": 0.15,
+     "relevant": 0.72
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "freshness@Since the Snowflake conn",
+    "kind": "core",
+    "expected": "include",
+    "got": {
+     "route": "include",
+     "contradicts": 0.33,
+     "evidence": 0.74,
+     "injection": 0.15,
+     "relevant": 0.84
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "bq_schedule@Since the Snowflake conn",
+    "kind": "core",
+    "expected": "exclude",
+    "got": {
+     "route": "exclude",
+     "contradicts": 0.52,
+     "evidence": 0.36,
+     "injection": 0.18,
+     "relevant": 0.18
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "key_rotate@How do I rotate the API ",
+    "kind": "core",
+    "expected": "include",
+    "got": {
+     "route": "include",
+     "contradicts": 0.04,
+     "evidence": 0.99,
+     "injection": 0.39,
+     "relevant": 0.99
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "rate_limits@How do I rotate the API ",
+    "kind": "core",
+    "expected": "exclude",
+    "got": {
+     "route": "exclude",
+     "contradicts": 0.07,
+     "evidence": 0.02,
+     "injection": 0.11,
+     "relevant": 0.03
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J06": {
+  "id": "J06",
+  "job": "Remember what matters about a customer",
+  "cookbook": "Simple memory system",
+  "core": "6/6",
+  "edge": "3/3",
+  "requests": 10,
+  "input_tokens": 3896,
+  "cost_usd": 0.000164,
+  "api_seconds": 3.12,
+  "notes": [
+   "Without memory the CRM-sync ticket routes to salesforce_integrations (0.71).",
+   "Remember threshold 0.5 (cookbook). A secret must never be stored; real code should also block it before the model sees it."
+  ],
+  "cases": [
+   {
+    "id": "crm_and_region",
+    "kind": "core",
+    "expected": "remember",
+    "got": {
+     "remember_p": 0.84
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "resend_invoice",
+    "kind": "core",
+    "expected": "skip",
+    "got": {
+     "remember_p": 0.03
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "temporary_sandbox",
+    "kind": "core",
+    "expected": "skip",
+    "got": {
+     "remember_p": 0.05
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "contract_change",
+    "kind": "core",
+    "expected": "remember",
+    "got": {
+     "remember_p": 0.73
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "crm_migration",
+    "kind": "core",
+    "expected": "remember",
+    "got": {
+     "remember_p": 0.69
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "secret_shared",
+    "kind": "edge",
+    "expected": "skip",
+    "got": {
+     "remember_p": 0.06
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "route_with_memory",
+    "kind": "core",
+    "expected": "salesforce_integrations",
+    "got": {
+     "route": "salesforce_integrations",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "newer_fact_wins",
+    "kind": "edge",
+    "expected": "hubspot_integrations",
+    "got": {
+     "route": "hubspot_integrations",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "newer_fact_listed_first",
+    "kind": "edge",
+    "expected": "hubspot_integrations",
+    "got": {
+     "route": "hubspot_integrations",
+     "confidence": 0.99
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J07": {
+  "id": "J07",
+  "job": "File a record into a deep category tree",
+  "cookbook": "Hierarchical classification",
+  "core": "4/5",
+  "edge": "2/3",
+  "requests": 110,
+  "input_tokens": 39042,
+  "cost_usd": 0.00164,
+  "api_seconds": 34.35,
+  "notes": [
+   "Beam width 3 vs greedy, one Choice request per tree node. Reversing sibling order changed the beam answer for 0 of 8 records."
+  ],
+  "cases": [
+   {
+    "id": "custom_db_dev",
+    "kind": "core",
+    "expected": [
+     "Professional Services/Computer Services/Custom Software Development"
+    ],
+    "got": {
+     "beam3": "Information/Software Publishers/Database Software",
+     "greedy": "Information/Software Publishers/Database Software",
+     "beam3_reversed_options": "Information/Software Publishers/Database Software",
+     "path_score": 0.802
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "db_vendor",
+    "kind": "core",
+    "expected": [
+     "Information/Software Publishers/Database Software"
+    ],
+    "got": {
+     "beam3": "Information/Software Publishers/Database Software",
+     "greedy": "Information/Software Publishers/Database Software",
+     "beam3_reversed_options": "Information/Software Publishers/Database Software",
+     "path_score": 0.993
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "brewery",
+    "kind": "core",
+    "expected": [
+     "Manufacturing/Food and Beverage/Breweries"
+    ],
+    "got": {
+     "beam3": "Manufacturing/Food and Beverage/Breweries",
+     "greedy": "Manufacturing/Food and Beverage/Breweries",
+     "beam3_reversed_options": "Manufacturing/Food and Beverage/Breweries",
+     "path_score": 0.956
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "urgent_care",
+    "kind": "core",
+    "expected": [
+     "Health Care/Clinics"
+    ],
+    "got": {
+     "beam3": "Health Care/Clinics",
+     "greedy": "Health Care/Clinics",
+     "beam3_reversed_options": "Health Care/Clinics",
+     "path_score": 0.99
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "data_broker",
+    "kind": "core",
+    "expected": [
+     "Information/Data Processing and Hosting/Data Brokers and Enrichment"
+    ],
+    "got": {
+     "beam3": "Information/Data Processing and Hosting/Data Brokers and Enrichment",
+     "greedy": "Information/Data Processing and Hosting/Data Brokers and Enrichment",
+     "beam3_reversed_options": "Information/Data Processing and Hosting/Data Brokers and Enrichment",
+     "path_score": 0.956
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "infusion_pumps",
+    "kind": "edge",
+    "expected": [
+     "Manufacturing/Computer and Electronic Products/Medical Devices and Instruments"
+    ],
+    "got": {
+     "beam3": "Health Care/Hospitals",
+     "greedy": "Health Care/Hospitals",
+     "beam3_reversed_options": "Health Care/Hospitals",
+     "path_score": 0.678
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "hospital_security",
+    "kind": "edge",
+    "expected": [
+     "Professional Services/Computer Services/IT Consulting",
+     "Professional Services/Computer Services/Managed IT Services"
+    ],
+    "got": {
+     "beam3": "Professional Services/Computer Services/IT Consulting",
+     "greedy": "Professional Services/Computer Services/IT Consulting",
+     "beam3_reversed_options": "Professional Services/Computer Services/IT Consulting",
+     "path_score": 0.869
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "refurb_switches",
+    "kind": "edge",
+    "expected": [
+     "Retail and Wholesale/Online Retail"
+    ],
+    "got": {
+     "beam3": "Retail and Wholesale/Online Retail",
+     "greedy": "Retail and Wholesale/Online Retail",
+     "beam3_reversed_options": "Retail and Wholesale/Online Retail",
+     "path_score": 0.995
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J08": {
+  "id": "J08",
+  "job": "Classify, and fall back to a broader label when unsure",
+  "cookbook": "Classification using confidence",
+  "core": "6/6",
+  "edge": "4/4",
+  "requests": 10,
+  "input_tokens": 7202,
+  "cost_usd": 0.000302,
+  "api_seconds": 3.04,
+  "notes": [
+   "One Choice over 16 subcategories; below confidence 0.9 code reports the parent category instead (cookbook cutoff)."
+  ],
+  "cases": [
+   {
+    "id": "warehouse",
+    "kind": "core",
+    "expected": "cloud_data_warehouse",
+    "got": {
+     "reported": "cloud_data_warehouse",
+     "top": "cloud_data_warehouse",
+     "confidence": 1.0,
+     "top_p": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "sso",
+    "kind": "core",
+    "expected": "identity_access",
+    "got": {
+     "reported": "identity_access",
+     "top": "identity_access",
+     "confidence": 1.0,
+     "top_p": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "subs_billing",
+    "kind": "core",
+    "expected": "billing_subscriptions",
+    "got": {
+     "reported": "billing_subscriptions",
+     "top": "billing_subscriptions",
+     "confidence": 1.0,
+     "top_p": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "pipelines",
+    "kind": "core",
+    "expected": "etl_elt",
+    "got": {
+     "reported": "etl_elt",
+     "top": "etl_elt",
+     "confidence": 1.0,
+     "top_p": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "contact_data",
+    "kind": "core",
+    "expected": "sales_intelligence",
+    "got": {
+     "reported": "sales_intelligence",
+     "top": "sales_intelligence",
+     "confidence": 1.0,
+     "top_p": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "pipeline_crm",
+    "kind": "core",
+    "expected": "crm",
+    "got": {
+     "reported": "crm",
+     "top": "crm",
+     "confidence": 1.0,
+     "top_p": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "vague",
+    "kind": "edge",
+    "expected": "not a confident specific label",
+    "got": {
+     "reported": "Data Infrastructure",
+     "top": "cloud_data_warehouse",
+     "confidence": 0.34,
+     "top_p": 0.38
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "consultancy_trap",
+    "kind": "edge",
+    "expected": "database_consulting",
+    "got": {
+     "reported": "database_consulting",
+     "top": "database_consulting",
+     "confidence": 1.0,
+     "top_p": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "reverse_etl",
+    "kind": "edge",
+    "expected": "reverse_etl",
+    "got": {
+     "reported": "reverse_etl",
+     "top": "reverse_etl",
+     "confidence": 1.0,
+     "top_p": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "crm_with_warehouse",
+    "kind": "edge",
+    "expected": "crm",
+    "got": {
+     "reported": "crm",
+     "top": "crm",
+     "confidence": 0.99,
+     "top_p": 0.99
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J09": {
+  "id": "J09",
+  "job": "Sort a live message stream: show, highlight, hide or blur",
+  "cookbook": "Twitch chat filter",
+  "core": "6/6",
+  "edge": "6/6",
+  "requests": 12,
+  "input_tokens": 6674,
+  "cost_usd": 0.00028,
+  "api_seconds": 3.96,
+  "notes": [
+   "One request per message with 3 questions; actions decided by rules in code (hostile and secret thresholds 0.7)."
+  ],
+  "cases": [
+   {
+    "id": "doc_question",
+    "kind": "core",
+    "expected": [
+     "highlight"
+    ],
+    "got": {
+     "action": "highlight",
+     "category": "question",
+     "margin": 1.0,
+     "hostile": 0.01,
+     "secret": 0.03
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "outage",
+    "kind": "core",
+    "expected": [
+     "page_oncall"
+    ],
+    "got": {
+     "action": "page_oncall",
+     "category": "incident",
+     "margin": 1.0,
+     "hostile": 0.01,
+     "secret": 0.03
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "vendor_pitch",
+    "kind": "core",
+    "expected": [
+     "hide"
+    ],
+    "got": {
+     "action": "hide",
+     "category": "spam",
+     "margin": 1.0,
+     "hostile": 0.02,
+     "secret": 0.02
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "thanks",
+    "kind": "core",
+    "expected": [
+     "show"
+    ],
+    "got": {
+     "action": "show",
+     "category": "chatter",
+     "margin": 1.0,
+     "hostile": 0.01,
+     "secret": 0.02
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "insult",
+    "kind": "core",
+    "expected": [
+     "hide"
+    ],
+    "got": {
+     "action": "hide",
+     "category": "chatter",
+     "margin": 0.95,
+     "hostile": 0.96,
+     "secret": 0.02
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "pasted_secret",
+    "kind": "core",
+    "expected": [
+     "blur"
+    ],
+    "got": {
+     "action": "blur",
+     "category": "question",
+     "margin": 0.01,
+     "hostile": 0.02,
+     "secret": 0.82
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "fix_as_question",
+    "kind": "edge",
+    "expected": [
+     "collapse"
+    ],
+    "got": {
+     "action": "collapse",
+     "category": "unsolicited_fix",
+     "margin": 0.96,
+     "hostile": 0.18,
+     "secret": 0.04
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "banter",
+    "kind": "edge",
+    "expected": [
+     "show"
+    ],
+    "got": {
+     "action": "show",
+     "category": "chatter",
+     "margin": 1.0,
+     "hostile": 0.03,
+     "secret": 0.02
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "pt_question",
+    "kind": "edge",
+    "expected": [
+     "highlight"
+    ],
+    "got": {
+     "action": "highlight",
+     "category": "question",
+     "margin": 1.0,
+     "hostile": 0.02,
+     "secret": 0.02
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "pt_insult",
+    "kind": "edge",
+    "expected": [
+     "hide"
+    ],
+    "got": {
+     "action": "hide",
+     "category": "chatter",
+     "margin": 0.97,
+     "hostile": 0.96,
+     "secret": 0.02
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "customer_data",
+    "kind": "edge",
+    "expected": [
+     "blur"
+    ],
+    "got": {
+     "action": "blur",
+     "category": "chatter",
+     "margin": 0.56,
+     "hostile": 0.02,
+     "secret": 0.91
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "lag_question",
+    "kind": "edge",
+    "expected": [
+     "highlight",
+     "page_oncall"
+    ],
+    "got": {
+     "action": "page_oncall",
+     "category": "incident",
+     "margin": 0.12,
+     "hostile": 0.01,
+     "secret": 0.03
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J10": {
+  "id": "J10",
+  "job": "Check a cheap extractor and escalate only the doubtful records",
+  "cookbook": "SDE cascade",
+  "core": "6/6",
+  "edge": "2/2",
+  "requests": 8,
+  "input_tokens": 6450,
+  "cost_usd": 0.000271,
+  "api_seconds": 2.59,
+  "notes": [
+   "Per-field Noul battery (2 checks per filled field, 1 per empty field), escalate if any > 0.7. Wrong records accepted: 0."
+  ],
+  "cases": [
+   {
+    "id": "all_correct",
+    "kind": "core",
+    "expected": {
+     "decision": "accept",
+     "wrong_fields": []
+    },
+    "got": {
+     "decision": "accept",
+     "flagged_fields": [],
+     "max": {}
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "invented_year",
+    "kind": "core",
+    "expected": {
+     "decision": "escalate",
+     "wrong_fields": [
+      "founded_year"
+     ]
+    },
+    "got": {
+     "decision": "escalate",
+     "flagged_fields": [
+      "founded_year"
+     ],
+     "max": {
+      "founded_year::hallucinated": 0.97,
+      "founded_year::off_target": 0.45,
+      "hq_city::hallucinated": 0.39
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "customers_as_staff",
+    "kind": "core",
+    "expected": {
+     "decision": "escalate",
+     "wrong_fields": [
+      "employee_count"
+     ]
+    },
+    "got": {
+     "decision": "escalate",
+     "flagged_fields": [
+      "employee_count"
+     ],
+     "max": {
+      "employee_count::hallucinated": 0.9,
+      "employee_count::off_target": 0.93
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "missed_ceo",
+    "kind": "core",
+    "expected": {
+     "decision": "escalate",
+     "wrong_fields": [
+      "ceo_name"
+     ]
+    },
+    "got": {
+     "decision": "escalate",
+     "flagged_fields": [
+      "ceo_name"
+     ],
+     "max": {
+      "ceo_name::absence_wrong": 0.99
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "truly_absent",
+    "kind": "core",
+    "expected": {
+     "decision": "accept",
+     "wrong_fields": []
+    },
+    "got": {
+     "decision": "accept",
+     "flagged_fields": [],
+     "max": {}
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "wrong_executive",
+    "kind": "core",
+    "expected": {
+     "decision": "escalate",
+     "wrong_fields": [
+      "ceo_name"
+     ]
+    },
+    "got": {
+     "decision": "escalate",
+     "flagged_fields": [
+      "ceo_name"
+     ],
+     "max": {
+      "ceo_name::hallucinated": 0.98,
+      "ceo_name::off_target": 0.95
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inferred_year",
+    "kind": "edge",
+    "expected": {
+     "decision": "accept",
+     "wrong_fields": []
+    },
+    "got": {
+     "decision": "accept",
+     "flagged_fields": [],
+     "max": {
+      "founded_year::off_target": 0.35
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "stale_city",
+    "kind": "edge",
+    "expected": {
+     "decision": "escalate",
+     "wrong_fields": [
+      "hq_city"
+     ]
+    },
+    "got": {
+     "decision": "escalate",
+     "flagged_fields": [
+      "hq_city"
+     ],
+     "max": {
+      "hq_city::hallucinated": 0.97,
+      "hq_city::off_target": 0.91
+     }
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J11": {
+  "id": "J11",
+  "job": "Read a date from text and let code do the calendar maths",
+  "cookbook": "Date extraction",
+  "core": "5/5",
+  "edge": "3/4",
+  "requests": 14,
+  "input_tokens": 20436,
+  "cost_usd": 0.000858,
+  "api_seconds": 4.47,
+  "notes": [
+   "Seven Choice questions per document; code assembles the date, infers missing years and resolves weekdays; review below confidence 0.6. Today pinned to 2026-10-28."
+  ],
+  "cases": [
+   {
+    "id": "explicit",
+    "kind": "core",
+    "expected": [
+     "2027-03-01"
+    ],
+    "got": {
+     "outcome": "2027-03-01",
+     "proposed": "2027-03-01",
+     "confidence": 1.0,
+     "mode": "absolute"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "no_year",
+    "kind": "core",
+    "expected": [
+     "2026-11-14"
+    ],
+    "got": {
+     "outcome": "2026-11-14",
+     "proposed": "2026-11-14",
+     "confidence": 1.0,
+     "mode": "absolute"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "next_tuesday",
+    "kind": "core",
+    "expected": [
+     "2026-11-03"
+    ],
+    "got": {
+     "outcome": "2026-11-03",
+     "proposed": "2026-11-03",
+     "confidence": 0.94,
+     "mode": "relative"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "not_stated",
+    "kind": "core",
+    "expected": [
+     "none",
+     "review"
+    ],
+    "got": {
+     "outcome": "none",
+     "proposed": null,
+     "confidence": 1.0,
+     "mode": "none"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "today",
+    "kind": "core",
+    "expected": [
+     "2026-10-28"
+    ],
+    "got": {
+     "outcome": "2026-10-28",
+     "proposed": "2026-10-28",
+     "confidence": 1.0,
+     "mode": "relative"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "twelve_months_later",
+    "kind": "edge",
+    "expected": [
+     "2027-01-15",
+     "review"
+    ],
+    "got": {
+     "outcome": "review",
+     "proposed": null,
+     "confidence": 0.96,
+     "mode": "incomplete"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "ambiguous_numeric",
+    "kind": "edge",
+    "expected": [
+     "review"
+    ],
+    "got": {
+     "outcome": "2027-03-03",
+     "proposed": "2027-03-03",
+     "confidence": 0.69,
+     "mode": "absolute"
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "days_after_invoice",
+    "kind": "edge",
+    "expected": [
+     "2026-04-02",
+     "review"
+    ],
+    "got": {
+     "outcome": "review",
+     "proposed": null,
+     "confidence": 0.97,
+     "mode": "incomplete"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "direct_date_comparison",
+    "kind": "edge",
+    "expected": "6/6 comparisons right",
+    "got": "6/6 right",
+    "pass": true,
+    "detail": "Asking the model to compare dates directly, which the docs advise against."
+   }
+  ]
+ },
+ "J12": {
+  "id": "J12",
+  "job": "Pick the right value from candidates that code found",
+  "cookbook": "Pre-parsed value extraction",
+  "core": "5/5",
+  "edge": "3/3",
+  "requests": 8,
+  "input_tokens": 4459,
+  "cost_usd": 0.000187,
+  "api_seconds": 2.7,
+  "notes": [
+   "Regular expressions find every candidate; one Choice picks among them plus \"none\"; code copies the exact text."
+  ],
+  "cases": [
+   {
+    "id": "contract_email",
+    "kind": "core",
+    "expected": "legal@corvid-analytics.example",
+    "got": {
+     "picked": "legal@corvid-analytics.example",
+     "confidence": 1.0,
+     "candidates": [
+      "lena.fischer@corvid-analytics.example",
+      "legal@corvid-analytics.example"
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "ap_phone",
+    "kind": "core",
+    "expected": "+44 20 7946 0321",
+    "got": {
+     "picked": "+44 20 7946 0321",
+     "confidence": 1.0,
+     "candidates": [
+      "+44 20 7946 0321",
+      "+44 20 7946 0999"
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "direct_line",
+    "kind": "core",
+    "expected": "+44 20 7946 0999",
+    "got": {
+     "picked": "+44 20 7946 0999",
+     "confidence": 1.0,
+     "candidates": [
+      "+44 20 7946 0321",
+      "+44 20 7946 0999"
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "po_number",
+    "kind": "core",
+    "expected": "PO-88213",
+    "got": {
+     "picked": "PO-88213",
+     "confidence": 1.0,
+     "candidates": [
+      "PO-88213",
+      "Q-55102",
+      "INV-20931"
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "amount_to_pay",
+    "kind": "core",
+    "expected": "$11,000.00",
+    "got": {
+     "picked": "$11,000.00",
+     "confidence": 1.0,
+     "candidates": [
+      "$12,400.00",
+      "$1,400.00",
+      "$11,000.00",
+      "$500.00"
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "waived_fee",
+    "kind": "edge",
+    "expected": "$500.00",
+    "got": {
+     "picked": "$500.00",
+     "confidence": 0.97,
+     "candidates": [
+      "$12,400.00",
+      "$1,400.00",
+      "$11,000.00",
+      "$500.00"
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "fax_absent",
+    "kind": "edge",
+    "expected": "none",
+    "got": {
+     "picked": "none",
+     "confidence": 1.0,
+     "candidates": [
+      "+44 20 7946 0321",
+      "+44 20 7946 0999"
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "regex_missed_po",
+    "kind": "edge",
+    "expected": "none",
+    "got": {
+     "picked": "none",
+     "confidence": 1.0,
+     "candidates": [
+      "Q-55102",
+      "INV-20931"
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J13": {
+  "id": "J13",
+  "job": "Rebuild headings, lists and code from flattened text",
+  "cookbook": "Structure recovery",
+  "core": "10/11",
+  "edge": "4/5",
+  "requests": 2,
+  "input_tokens": 4037,
+  "cost_usd": 0.00017,
+  "api_seconds": 0.68,
+  "notes": [
+   "Pass 1: one Noul per adjacent line pair (join bar 0.2 after an unfinished line, 0.5 after end punctuation). Pass 2: one Choice per block. Two requests in total."
+  ],
+  "cases": [
+   {
+    "id": "line_joins",
+    "kind": "core",
+    "expected": "18 of 18 join decisions right",
+    "got": {
+     "right": "15 of 18",
+     "wrong": [
+      "L001 (0.67)",
+      "L010 (0.66)",
+      "L018 (0.18)"
+     ]
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "B000 Restoring the orders databas",
+    "kind": "core",
+    "expected": "heading",
+    "got": {
+     "type": "heading",
+     "confidence": 0.99
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B001 This runbook explains how to",
+    "kind": "core",
+    "expected": "paragraph",
+    "got": {
+     "type": "paragraph",
+     "confidence": 0.99
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B002 Before you start",
+    "kind": "core",
+    "expected": "heading",
+    "got": {
+     "type": "heading",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B003 Warning: restoring overwrite",
+    "kind": "core",
+    "expected": "callout",
+    "got": {
+     "type": "callout",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B004 SELECT the snapshot with the",
+    "kind": "edge",
+    "expected": "paragraph|list_item",
+    "got": {
+     "type": "callout",
+     "confidence": 0.35
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "B005 Stop the application workers",
+    "kind": "core",
+    "expected": "list_item",
+    "got": {
+     "type": "list_item",
+     "confidence": 0.98
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B006 Take a final backup of the c",
+    "kind": "core",
+    "expected": "list_item",
+    "got": {
+     "type": "list_item",
+     "confidence": 0.99
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B007 Run the restore:",
+    "kind": "edge",
+    "expected": "list_item",
+    "got": {
+     "type": "list_item",
+     "confidence": 0.51
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B008 pg_restore --clean --dbname=",
+    "kind": "core",
+    "expected": "code",
+    "got": {
+     "type": "code",
+     "confidence": 0.99
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B009 Check that the row counts ma",
+    "kind": "edge",
+    "expected": "list_item",
+    "got": {
+     "type": "list_item",
+     "confidence": 0.58
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B010 SELECT count(*) FROM orders ",
+    "kind": "edge",
+    "expected": "code",
+    "got": {
+     "type": "code",
+     "confidence": 0.89
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B011 Restart the workers and watc",
+    "kind": "core",
+    "expected": "list_item",
+    "got": {
+     "type": "list_item",
+     "confidence": 0.9
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B012 Note: if the restore fails h",
+    "kind": "edge",
+    "expected": "callout",
+    "got": {
+     "type": "callout",
+     "confidence": 0.99
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B013 Rollback",
+    "kind": "core",
+    "expected": "heading",
+    "got": {
+     "type": "heading",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B014 If the restored data is also",
+    "kind": "core",
+    "expected": "paragraph",
+    "got": {
+     "type": "paragraph",
+     "confidence": 0.78
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J14": {
+  "id": "J14",
+  "job": "Move the most useful search result to the top",
+  "cookbook": "Re-ranking",
+  "core": "4/4",
+  "edge": "2/2",
+  "requests": 60,
+  "input_tokens": 23519,
+  "cost_usd": 0.000988,
+  "api_seconds": 19.45,
+  "notes": [
+   "Keyword (BM25) shortlist of 10 from 30 articles; one Noul per ticket-article pair; sort by probability. Pass = right article ranked first.",
+   "Versus keyword rank: 1 better, 5 same, 0 worse, 0 not shortlisted."
+  ],
+  "cases": [
+   {
+    "id": "deadlock",
+    "kind": "core",
+    "expected": "a01",
+    "got": {
+     "keyword_rank_of_answer": 1,
+     "jev_rank_of_answer": 1,
+     "top_scores": {
+      "a01": 0.91,
+      "a16": 0.13,
+      "a29": 0.12
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "scram_login",
+    "kind": "core",
+    "expected": "a09",
+    "got": {
+     "keyword_rank_of_answer": 1,
+     "jev_rank_of_answer": 1,
+     "top_scores": {
+      "a09": 0.9,
+      "a04": 0.25,
+      "a28": 0.23
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "ids_collide",
+    "kind": "core",
+    "expected": "a26",
+    "got": {
+     "keyword_rank_of_answer": 1,
+     "jev_rank_of_answer": 1,
+     "top_scores": {
+      "a26": 0.92,
+      "a12": 0.27,
+      "a01": 0.09
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "disk_filling",
+    "kind": "core",
+    "expected": "a13",
+    "got": {
+     "keyword_rank_of_answer": 7,
+     "jev_rank_of_answer": 1,
+     "top_scores": {
+      "a13": 0.84,
+      "a30": 0.27,
+      "a12": 0.16
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "near_duplicate_version",
+    "kind": "edge",
+    "expected": "a05",
+    "got": {
+     "keyword_rank_of_answer": 1,
+     "jev_rank_of_answer": 1,
+     "top_scores": {
+      "a05": 0.7,
+      "a28": 0.44,
+      "a06": 0.36
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "keyword_trap",
+    "kind": "edge",
+    "expected": "a07",
+    "got": {
+     "keyword_rank_of_answer": 1,
+     "jev_rank_of_answer": 1,
+     "top_scores": {
+      "a07": 0.92,
+      "a10": 0.39,
+      "a24": 0.05
+     }
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J15": {
+  "id": "J15",
+  "job": "Find the exact line in a long document that answers a question",
+  "cookbook": "Line-by-line search",
+  "core": "4/4",
+  "edge": "3/3",
+  "requests": 7,
+  "input_tokens": 7714,
+  "cost_usd": 0.000324,
+  "api_seconds": 2.13,
+  "notes": [
+   "Whole 28-line document in one request per query: a Choice over line ids plus an \"is it answered\" Noul (found >= 0.7, absent <= 0.35)."
+  ],
+  "cases": [
+   {
+    "id": "retention",
+    "kind": "core",
+    "expected": [
+     "L017"
+    ],
+    "got": {
+     "verdict": "found",
+     "exists": 0.99,
+     "top_line": "L017",
+     "line_p": 1.0,
+     "text": "Backups are retained for 35 days."
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "uptime",
+    "kind": "core",
+    "expected": [
+     "L005"
+    ],
+    "got": {
+     "verdict": "found",
+     "exists": 0.99,
+     "top_line": "L005",
+     "line_p": 1.0,
+     "text": "We will make the Service available 99.9% of the time in each calendar month."
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "sev1_response",
+    "kind": "core",
+    "expected": [
+     "L012"
+    ],
+    "got": {
+     "verdict": "found",
+     "exists": 0.99,
+     "top_line": "L012",
+     "line_p": 1.0,
+     "text": "Severity 1 incidents receive a first response within 30 minutes, 24 hours a day."
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "model_training",
+    "kind": "core",
+    "expected": [
+     "L023"
+    ],
+    "got": {
+     "verdict": "found",
+     "exists": 0.99,
+     "top_line": "L023",
+     "line_p": 1.0,
+     "text": "We never use Customer Data to train machine-learning models."
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "replicas_absent",
+    "kind": "edge",
+    "expected": "absent",
+    "got": {
+     "verdict": "absent",
+     "exists": 0.03,
+     "top_line": "L000",
+     "line_p": 0.23,
+     "text": "Service Level Agreement - Corvid Cloud Database"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "price_absent",
+    "kind": "edge",
+    "expected": "absent",
+    "got": {
+     "verdict": "absent",
+     "exists": 0.03,
+     "top_line": "L008",
+     "line_p": 0.35,
+     "text": "Service credits are 10% of the monthly fee for each full 0.1% below the target."
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "split_answer",
+    "kind": "edge",
+    "expected": [
+     "L020",
+     "L021"
+    ],
+    "got": {
+     "verdict": "found",
+     "exists": 0.99,
+     "top_line": "L020",
+     "line_p": 0.87,
+     "text": "Our recovery point objective is 24 hours of data."
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J16": {
+  "id": "J16",
+  "job": "Decide whether two records are the same thing",
+  "cookbook": "Knowledge graph entity alignment",
+  "core": "5/6",
+  "edge": "4/4",
+  "requests": 10,
+  "input_tokens": 4591,
+  "cost_usd": 0.000193,
+  "api_seconds": 3.36,
+  "notes": [
+   "One Score (3 levels) plus three field Nouls per pair; code rounds the score: >= 1.5 merge, >= 0.5 curator, else separate. Unlike the cookbook, we score against labels."
+  ],
+  "cases": [
+   {
+    "id": "typo_same",
+    "kind": "core",
+    "expected": [
+     "merge"
+    ],
+    "got": {
+     "route": "merge",
+     "score": 1.94,
+     "confidence": 0.91,
+     "name": 0.94,
+     "domain": 0.99,
+     "place": 0.87
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "name_clash",
+    "kind": "core",
+    "expected": [
+     "separate"
+    ],
+    "got": {
+     "route": "separate",
+     "score": 0.06,
+     "confidence": 0.93,
+     "name": 0.04,
+     "domain": 0.02,
+     "place": 0.01
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "former_name",
+    "kind": "core",
+    "expected": [
+     "merge"
+    ],
+    "got": {
+     "route": "merge",
+     "score": 1.98,
+     "confidence": 0.98,
+     "name": 0.35,
+     "domain": 0.99,
+     "place": 0.99
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "misspelt",
+    "kind": "core",
+    "expected": [
+     "merge"
+    ],
+    "got": {
+     "route": "merge",
+     "score": 1.89,
+     "confidence": 0.85,
+     "name": 0.79,
+     "domain": 0.99,
+     "place": 0.66
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "shared_word",
+    "kind": "core",
+    "expected": [
+     "separate"
+    ],
+    "got": {
+     "route": "curator",
+     "score": 0.57,
+     "confidence": 0.32,
+     "name": 0.06,
+     "domain": 0.02,
+     "place": 0.98
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "suffix_only",
+    "kind": "core",
+    "expected": [
+     "merge"
+    ],
+    "got": {
+     "route": "merge",
+     "score": 1.93,
+     "confidence": 0.91,
+     "name": 0.87,
+     "domain": 0.99,
+     "place": 0.91
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "subsidiary",
+    "kind": "edge",
+    "expected": [
+     "curator"
+    ],
+    "got": {
+     "route": "curator",
+     "score": 0.89,
+     "confidence": 0.74,
+     "name": 0.24,
+     "domain": 0.02,
+     "place": 0.01
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "id_conflict",
+    "kind": "edge",
+    "expected": [
+     "curator",
+     "separate"
+    ],
+    "got": {
+     "route": "curator",
+     "score": 0.75,
+     "confidence": 0.0,
+     "name": 0.98,
+     "domain": 0.99,
+     "place": 0.98
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "acronym",
+    "kind": "edge",
+    "expected": [
+     "merge"
+    ],
+    "got": {
+     "route": "merge",
+     "score": 1.96,
+     "confidence": 0.94,
+     "name": 0.93,
+     "domain": 0.99,
+     "place": 0.9
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "other_office",
+    "kind": "edge",
+    "expected": [
+     "curator",
+     "merge"
+    ],
+    "got": {
+     "route": "curator",
+     "score": 1.28,
+     "confidence": 0.56,
+     "name": 0.98,
+     "domain": 0.99,
+     "place": 0.02
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J17": {
+  "id": "J17",
+  "job": "Tick off a checklist as a conversation happens",
+  "cookbook": "Intelliprompter",
+  "core": "3/3",
+  "edge": "2/2",
+  "requests": 7,
+  "input_tokens": 4367,
+  "cost_usd": 0.000183,
+  "api_seconds": 2.67,
+  "notes": [
+   "One request per transcript chunk with one Score per unticked item; ticks are one-way; threshold 2.5 on 1-5. Budget is mentioned-but-deferred at chunk 3; compliance is answered with a \"no\" at chunk 4."
+  ],
+  "cases": [
+   {
+    "id": "database",
+    "kind": "core",
+    "expected": "ticked at chunk 2",
+    "got": {
+     "ticked_at_chunk": 2,
+     "score": 4.83
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "volume",
+    "kind": "core",
+    "expected": "ticked at chunk 2",
+    "got": {
+     "ticked_at_chunk": 2,
+     "score": 4.38
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "decider",
+    "kind": "core",
+    "expected": "ticked at chunk 5",
+    "got": {
+     "ticked_at_chunk": 5,
+     "score": 3.74
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "compliance",
+    "kind": "edge",
+    "expected": "ticked at chunk 4",
+    "got": {
+     "ticked_at_chunk": 4,
+     "score": 3.63
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "budget",
+    "kind": "edge",
+    "expected": "ticked at chunk 7",
+    "got": {
+     "ticked_at_chunk": 7,
+     "score": 3.86
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J18": {
+  "id": "J18",
+  "job": "Ask more than once, act only when answers agree",
+  "cookbook": "Self-consistency: choices and nouls",
+  "core": "4/4",
+  "edge": "4/4",
+  "requests": 64,
+  "input_tokens": 27168,
+  "cost_usd": 0.001141,
+  "api_seconds": 21.22,
+  "notes": [
+   "8 runs per ticket with a throwaway uid; odd runs reverse the option order. Code abstains below top probability 0.6. Abstained: 7/64 answers."
+  ],
+  "cases": [
+   {
+    "id": "down",
+    "kind": "core",
+    "expected": "Outage",
+    "got": {
+     "original_order": {
+      "Outage": 4
+     },
+     "reversed_order": {
+      "Outage": 4
+     },
+     "top_p_range": [
+      1.0,
+      1.0
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "double_charge",
+    "kind": "core",
+    "expected": "Billing",
+    "got": {
+     "original_order": {
+      "Billing": 4
+     },
+     "reversed_order": {
+      "Billing": 4
+     },
+     "top_p_range": [
+      1.0,
+      1.0
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "pdf_export",
+    "kind": "core",
+    "expected": "FeatureRequest",
+    "got": {
+     "original_order": {
+      "FeatureRequest": 4
+     },
+     "reversed_order": {
+      "FeatureRequest": 4
+     },
+     "top_p_range": [
+      1.0,
+      1.0
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "foreign_login",
+    "kind": "core",
+    "expected": "Security",
+    "got": {
+     "original_order": {
+      "Security": 4
+     },
+     "reversed_order": {
+      "Security": 4
+     },
+     "top_p_range": [
+      1.0,
+      1.0
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "slow_after_rotation",
+    "kind": "edge",
+    "expected": "no two different automatic labels",
+    "got": {
+     "original_order": {
+      "Security": 4
+     },
+     "reversed_order": {
+      "Security": 4
+     },
+     "top_p_range": [
+      1.0,
+      1.0
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "bill_from_slowness",
+    "kind": "edge",
+    "expected": "no two different automatic labels",
+    "got": {
+     "original_order": {
+      "Performance": 1,
+      "abstain": 3
+     },
+     "reversed_order": {
+      "abstain": 4
+     },
+     "top_p_range": [
+      0.52,
+      0.62
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "up_but_unusable",
+    "kind": "edge",
+    "expected": "no two different automatic labels",
+    "got": {
+     "original_order": {
+      "Performance": 4
+     },
+     "reversed_order": {
+      "Performance": 4
+     },
+     "top_p_range": [
+      0.96,
+      0.97
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "geo_block_request",
+    "kind": "edge",
+    "expected": "no two different automatic labels",
+    "got": {
+     "original_order": {
+      "FeatureRequest": 4
+     },
+     "reversed_order": {
+      "FeatureRequest": 4
+     },
+     "top_p_range": [
+      0.89,
+      0.91
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J19": {
+  "id": "J19",
+  "job": "Ask many questions in one request",
+  "cookbook": "Parallel questions",
+  "core": "2/2",
+  "edge": "1/1",
+  "requests": 22,
+  "input_tokens": 13048,
+  "cost_usd": 0.000548,
+  "api_seconds": 6.79,
+  "notes": [
+   "Long contract: one request of 10 questions used 1172 tokens vs 7904 for separate requests ($0.000049 vs $0.000332). Separate requests took 3.1 s one after another.",
+   "Two questions overlap on purpose (cap_12m and cap_excludes_dp) to check that answers do not leak between questions."
+  ],
+  "cases": [
+   {
+    "id": "correct_answers_long_doc",
+    "kind": "core",
+    "expected": "8 factual answers right",
+    "got": {
+     "wrong": []
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "same_answers_long_doc",
+    "kind": "core",
+    "expected": "no answer changes",
+    "got": [],
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "cheaper_long_doc",
+    "kind": "measure",
+    "expected": "at least 5x fewer tokens batched",
+    "got": {
+     "batch_tokens": 1172,
+     "single_tokens": 7904,
+     "token_ratio": 6.7
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "same_answers_short_doc",
+    "kind": "edge",
+    "expected": "no answer changes",
+    "got": [],
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "saving_shrinks_short_doc",
+    "kind": "measure",
+    "expected": "smaller saving than the long document",
+    "got": {
+     "batch_tokens": 708,
+     "single_tokens": 3264,
+     "token_ratio": 4.6
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J20": {
+  "id": "J20",
+  "job": "Turn free text into numbers a prediction model can use",
+  "cookbook": "Autoresearch feature discovery",
+  "core": "2/2",
+  "edge": "1/1",
+  "requests": 800,
+  "input_tokens": 334184,
+  "cost_usd": 0.014036,
+  "api_seconds": 261.11,
+  "notes": [
+   "400 synthetic account notes (227 churned); labels drawn at random from planted factors, including a data-quality factor that round 1 does not ask about. AUC = mean (standard error) over 10 x 5-fold cross-validation with logistic regression; \"perfect\" rows use the true planted factors and mark the ceiling."
+  ],
+  "cases": [
+   {
+    "id": "features_beat_keywords",
+    "kind": "core",
+    "expected": "question features score higher than word counts",
+    "got": {
+     "keywords": [
+      0.791,
+      0.006
+     ],
+     "round1": [
+      0.776,
+      0.007
+     ],
+     "round2": [
+      0.803,
+      0.006
+     ],
+     "perfect_round1_factors": [
+      0.792,
+      0.007
+     ],
+     "perfect_all_factors": [
+      0.826,
+      0.006
+     ],
+     "direct_score": [
+      0.728,
+      null
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "second_round_helps",
+    "kind": "core",
+    "expected": "adding the data-quality question raises accuracy",
+    "got": {
+     "round1": [
+      0.776,
+      0.007
+     ],
+     "round2": [
+      0.803,
+      0.006
+     ],
+     "perfect_round1_factors": [
+      0.792,
+      0.007
+     ],
+     "perfect_all_factors": [
+      0.826,
+      0.006
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "features_vs_direct",
+    "kind": "edge",
+    "expected": "combining narrow questions beats asking for the prediction directly",
+    "got": {
+     "round2": [
+      0.803,
+      0.006
+     ],
+     "direct_score": [
+      0.728,
+      null
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "J21": {
+  "id": "J21",
+  "job": "Read scanned documents: what is it, is it signed, where is the total",
+  "cookbook": "Images and Box (not a cookbook)",
+  "core": "19/19",
+  "edge": "5/5",
+  "requests": 7,
+  "input_tokens": 40490,
+  "cost_usd": 0.001701,
+  "api_seconds": 5.47,
+  "notes": [
+   "Unsigned invoice: the signature Box still returned {'top': 0.84, 'bottom': 0.87, 'left': 0.11, 'right': 0.59} with confidence 0.27; only the separate yes/no question tells code to ignore it.",
+   "Synthetic invoices drawn in code (exact truth known). One request per document with 7 questions; stamp options are defined by example images. A Box counts as found when its centre falls on the target. Images are \"dreamer-ready\" per TypeSafe, not production."
+  ],
+  "cases": [
+   {
+    "id": "inv_signed:kind",
+    "kind": "core",
+    "expected": "invoice",
+    "got": {
+     "kind": "invoice",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_signed:signed",
+    "kind": "core",
+    "expected": true,
+    "got": 0.69,
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_signed:stamp",
+    "kind": "core",
+    "expected": "none",
+    "got": {
+     "stamp": "none",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_signed:total_pick",
+    "kind": "core",
+    "expected": "$3,820.00",
+    "got": {
+     "picked": "$3,820.00",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_signed:over_4000",
+    "kind": "edge",
+    "expected": false,
+    "got": 0.01,
+    "pass": true,
+    "detail": "A number comparison on an image; the subtotal $4,820.00 is a distractor."
+   },
+   {
+    "id": "inv_signed:total_box",
+    "kind": "core",
+    "expected": "box centred on the total",
+    "got": {
+     "found": true,
+     "iou": 0.27,
+     "confidence": 0.77
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_signed:signature_box",
+    "kind": "core",
+    "expected": "box centred on the signature",
+    "got": {
+     "found": true,
+     "iou": 0.66,
+     "confidence": 0.78
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_unsigned:kind",
+    "kind": "core",
+    "expected": "invoice",
+    "got": {
+     "kind": "invoice",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_unsigned:signed",
+    "kind": "core",
+    "expected": false,
+    "got": 0.01,
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_unsigned:total_box",
+    "kind": "core",
+    "expected": "box centred on the total",
+    "got": {
+     "found": true,
+     "iou": 0.54,
+     "confidence": 0.72
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "po_signed:kind",
+    "kind": "core",
+    "expected": "purchase_order",
+    "got": {
+     "kind": "purchase_order",
+     "confidence": 0.77
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "po_signed:total_box",
+    "kind": "core",
+    "expected": "box centred on the total",
+    "got": {
+     "found": true,
+     "iou": 0.54,
+     "confidence": 0.63
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_paid:kind",
+    "kind": "core",
+    "expected": "invoice",
+    "got": {
+     "kind": "invoice",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_paid:stamp",
+    "kind": "core",
+    "expected": "PAID",
+    "got": {
+     "stamp": "PAID",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_paid:total_box",
+    "kind": "core",
+    "expected": "box centred on the total",
+    "got": {
+     "found": true,
+     "iou": 0.54,
+     "confidence": 0.76
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_void:kind",
+    "kind": "core",
+    "expected": "invoice",
+    "got": {
+     "kind": "invoice",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_void:signed",
+    "kind": "core",
+    "expected": false,
+    "got": 0.01,
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_void:stamp",
+    "kind": "core",
+    "expected": "VOID",
+    "got": {
+     "stamp": "VOID",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_void:total_box",
+    "kind": "core",
+    "expected": "box centred on the total",
+    "got": {
+     "found": true,
+     "iou": 0.28,
+     "confidence": 0.72
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_tiny_total:kind",
+    "kind": "core",
+    "expected": "invoice",
+    "got": {
+     "kind": "invoice",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_tiny_total:total_pick",
+    "kind": "edge",
+    "expected": "$3,820.00",
+    "got": {
+     "picked": "$3,820.00",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_tiny_total:total_box",
+    "kind": "edge",
+    "expected": "box centred on the total",
+    "got": {
+     "found": true,
+     "iou": 0.55,
+     "confidence": 0.8
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_rotated:kind",
+    "kind": "edge",
+    "expected": "invoice",
+    "got": {
+     "kind": "invoice",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "inv_rotated:total_pick",
+    "kind": "edge",
+    "expected": "$3,820.00",
+    "got": {
+     "picked": "$3,820.00",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S01": {
+  "id": "S01",
+  "job": "Turn a plain-English request into the right action",
+  "cookbook": "Function calling",
+  "core": "2/2",
+  "edge": "2/4",
+  "requests": 6,
+  "input_tokens": 6260,
+  "cost_usd": 0.000263,
+  "api_seconds": 1.82,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "One request per command carrying 10 questions; code runs the call only if min confidence >= 0.7."
+  ],
+  "cases": [
+   {
+    "id": "excel_synonym",
+    "kind": "edge",
+    "expected": "do not run",
+    "got": {
+     "tool": "export_table",
+     "args": {
+      "table": "invoices",
+      "format": "csv"
+     },
+     "min_confidence": 0.38,
+     "auto_runs": false
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "fifteen_minutes",
+    "kind": "edge",
+    "expected": "do not run",
+    "got": {
+     "tool": "schedule_backup",
+     "args": {
+      "database": "crm",
+      "frequency": "hourly"
+     },
+     "min_confidence": 0.98,
+     "auto_runs": true
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "two_tables",
+    "kind": "edge",
+    "expected": "do not run",
+    "got": {
+     "tool": "row_count",
+     "args": {
+      "table": "contacts"
+     },
+     "min_confidence": 0.59,
+     "auto_runs": false
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "filter_unsupported",
+    "kind": "edge",
+    "expected": "do not run",
+    "got": {
+     "tool": "export_table",
+     "args": {
+      "table": "contacts",
+      "format": "csv"
+     },
+     "min_confidence": 0.97,
+     "auto_runs": true
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "slangy",
+    "kind": "core",
+    "expected": {
+     "tool": "export_table",
+     "args": {
+      "table": "invoices",
+      "format": "csv",
+      "since": "1mo"
+     }
+    },
+    "got": {
+     "tool": "export_table",
+     "args": {
+      "table": "invoices",
+      "format": "csv",
+      "since": "1mo"
+     },
+     "min_confidence": 0.97,
+     "auto_runs": true
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "weekly_warehouse",
+    "kind": "core",
+    "expected": {
+     "tool": "schedule_backup",
+     "args": {
+      "database": "warehouse",
+      "frequency": "weekly"
+     }
+    },
+    "got": {
+     "tool": "schedule_backup",
+     "args": {
+      "database": "warehouse",
+      "frequency": "weekly"
+     },
+     "min_confidence": 0.97,
+     "auto_runs": true
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S02": {
+  "id": "S02",
+  "job": "Pick the right tool for an AI agent, or none",
+  "cookbook": "Skill suggestion",
+  "core": "3/3",
+  "edge": "2/3",
+  "requests": 11,
+  "input_tokens": 8155,
+  "cost_usd": 0.000343,
+  "api_seconds": 3.82,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "20 skills. Request 1 ranks all skills and asks 3 gate questions; request 2 re-checks the top 3. Gate 0.3, fits 0.3 (cookbook values)."
+  ],
+  "cases": [
+   {
+    "id": "dynamics",
+    "kind": "edge",
+    "expected": null,
+    "got": {
+     "suggested": null,
+     "gate": 0.86,
+     "shortlist": [
+      "salesforce-sync",
+      "hubspot-sync",
+      "snowflake-load"
+     ],
+     "fits": 0.11
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "redshift",
+    "kind": "edge",
+    "expected": null,
+    "got": {
+     "suggested": "snowflake-load",
+     "gate": 0.85,
+     "shortlist": [
+      "snowflake-load",
+      "s3-transfer",
+      "postgres-migrate"
+     ],
+     "fits": 0.34
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "explain_bounce",
+    "kind": "edge",
+    "expected": null,
+    "got": {
+     "suggested": null,
+     "gate": 0.13,
+     "shortlist": [
+      "email-verify",
+      "salesforce-sync",
+      "hubspot-sync"
+     ],
+     "fits": null
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "one_row_back",
+    "kind": "core",
+    "expected": "backup-restore",
+    "got": {
+     "suggested": "backup-restore",
+     "gate": 0.87,
+     "shortlist": [
+      "backup-restore",
+      "salesforce-sync",
+      "hubspot-sync"
+     ],
+     "fits": 0.94
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "add_column",
+    "kind": "core",
+    "expected": "postgres-migrate",
+    "got": {
+     "suggested": "postgres-migrate",
+     "gate": 0.74,
+     "shortlist": [
+      "postgres-migrate",
+      "salesforce-sync",
+      "hubspot-sync"
+     ],
+     "fits": 0.97
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "pii_where",
+    "kind": "core",
+    "expected": "pii-scan",
+    "got": {
+     "suggested": "pii-scan",
+     "gate": 0.69,
+     "shortlist": [
+      "pii-scan",
+      "data-dictionary",
+      "salesforce-sync"
+     ],
+     "fits": 0.97
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S03": {
+  "id": "S03",
+  "job": "Screen what goes into and out of an AI assistant",
+  "cookbook": "Guardrails for LLMs",
+  "core": "1/1",
+  "edge": "4/5",
+  "requests": 6,
+  "input_tokens": 3314,
+  "cost_usd": 0.000139,
+  "api_seconds": 1.94,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "Policy (fixed before running): block if a blocker >= 0.7; otherwise any hazard >= 0.35 (including destructive >= 0.7) goes to review, upgraded to block when severity >= 2.0."
+  ],
+  "cases": [
+   {
+    "id": "novel_roleplay",
+    "kind": "edge",
+    "expected": [
+     "block",
+     "review"
+    ],
+    "got": {
+     "decision": "block",
+     "destructive": 0.98,
+     "exfiltration": 0.07,
+     "jailbreak": 0.59,
+     "severity": 2.92
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "polite_exfil",
+    "kind": "edge",
+    "expected": [
+     "block",
+     "review"
+    ],
+    "got": {
+     "decision": "block",
+     "destructive": 0.02,
+     "exfiltration": 0.97,
+     "jailbreak": 0.12,
+     "severity": 2.84
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "encoded",
+    "kind": "edge",
+    "expected": [
+     "block",
+     "review"
+    ],
+    "got": {
+     "decision": "block",
+     "destructive": 0.03,
+     "exfiltration": 0.04,
+     "jailbreak": 0.99,
+     "severity": 2.54
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "staging_truncate",
+    "kind": "edge",
+    "expected": [
+     "pass",
+     "review"
+    ],
+    "got": {
+     "decision": "pass",
+     "destructive": 0.04,
+     "exfiltration": 0.01,
+     "jailbreak": 0.02,
+     "severity": 1.29
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "masked_output",
+    "kind": "edge",
+    "expected": [
+     "pass",
+     "review"
+    ],
+    "got": {
+     "decision": "block",
+     "broke_policy": 0.51,
+     "leaks_personal": 0.95,
+     "severity": 1.38
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "benign_sql",
+    "kind": "core",
+    "expected": [
+     "pass"
+    ],
+    "got": {
+     "decision": "pass",
+     "destructive": 0.01,
+     "exfiltration": 0.01,
+     "jailbreak": 0.01,
+     "severity": 0.01
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S04": {
+  "id": "S04",
+  "job": "Check that a citation really supports the claim",
+  "cookbook": "Double-checking citations",
+  "core": "1/1",
+  "edge": "4/4",
+  "requests": 5,
+  "input_tokens": 2046,
+  "cost_usd": 8.6e-05,
+  "api_seconds": 1.47,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "Code checks the quote exists (exact, or a sentence at least 85% similar) before any model call; one Choice per surviving citation; auto-accept at confidence 0.8."
+  ],
+  "cases": [
+   {
+    "id": "quantifier",
+    "kind": "edge",
+    "expected": [
+     "contradicted"
+    ],
+    "got": {
+     "verdict": "contradicted",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "partly_false",
+    "kind": "edge",
+    "expected": [
+     "contradicted"
+    ],
+    "got": {
+     "verdict": "contradicted",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "opposite_detail",
+    "kind": "edge",
+    "expected": [
+     "contradicted"
+    ],
+    "got": {
+     "verdict": "contradicted",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "extra_unsupported_detail",
+    "kind": "edge",
+    "expected": [
+     "says_nothing"
+    ],
+    "got": {
+     "verdict": "review:says_nothing",
+     "confidence": 0.79
+    },
+    "pass": true,
+    "detail": "sent to human review"
+   },
+   {
+    "id": "paraphrased_claim",
+    "kind": "core",
+    "expected": [
+     "verified"
+    ],
+    "got": {
+     "verdict": "verified",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S05": {
+  "id": "S05",
+  "job": "Decide which search results an AI is allowed to read",
+  "cookbook": "Classifying RAG passages",
+  "core": "2/2",
+  "edge": "2/3",
+  "requests": 5,
+  "input_tokens": 2252,
+  "cost_usd": 9.5e-05,
+  "api_seconds": 1.66,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "Four Nouls per query-passage pair; cookbook thresholds applied first-match-wins (injection .70, contradicts .70, relevant .45, evidence .55)."
+  ],
+  "cases": [
+   {
+    "id": "sf_legacy@How often does the Snowf",
+    "kind": "edge",
+    "expected": [
+     "conflict",
+     "exclude"
+    ],
+    "got": {
+     "route": "include",
+     "contradicts": 0.36,
+     "evidence": 0.98,
+     "injection": 0.11,
+     "relevant": 0.96
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "sales_nudge@How often does the Snowf",
+    "kind": "edge",
+    "expected": "exclude",
+    "got": {
+     "route": "exclude",
+     "contradicts": 0.16,
+     "evidence": 0.18,
+     "injection": 0.74,
+     "relevant": 0.56
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "buried@How often does the Snowf",
+    "kind": "core",
+    "expected": "include",
+    "got": {
+     "route": "include",
+     "contradicts": 0.09,
+     "evidence": 0.98,
+     "injection": 0.11,
+     "relevant": 0.97
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "sf_password@How do I rotate the API ",
+    "kind": "edge",
+    "expected": "exclude",
+    "got": {
+     "route": "exclude",
+     "contradicts": 0.66,
+     "evidence": 0.16,
+     "injection": 0.39,
+     "relevant": 0.1
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "key_rotate@How do I rotate the API ",
+    "kind": "core",
+    "expected": "include",
+    "got": {
+     "route": "include",
+     "contradicts": 0.04,
+     "evidence": 0.99,
+     "injection": 0.39,
+     "relevant": 0.99
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S06": {
+  "id": "S06",
+  "job": "Remember what matters about a customer",
+  "cookbook": "Simple memory system",
+  "core": "1/2",
+  "edge": "4/4",
+  "requests": 7,
+  "input_tokens": 2798,
+  "cost_usd": 0.000118,
+  "api_seconds": 2.06,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "Without memory the CRM-sync ticket routes to salesforce_integrations (0.41).",
+   "Remember threshold 0.5 (cookbook). A secret must never be stored; real code should also block it before the model sees it."
+  ],
+  "cases": [
+   {
+    "id": "hypothetical",
+    "kind": "edge",
+    "expected": "skip",
+    "got": {
+     "remember_p": 0.28
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "lasting_preference",
+    "kind": "core",
+    "expected": "remember",
+    "got": {
+     "remember_p": 0.48
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "urgent_one_off",
+    "kind": "edge",
+    "expected": "skip",
+    "got": {
+     "remember_p": 0.03
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "standing_policy",
+    "kind": "core",
+    "expected": "remember",
+    "got": {
+     "remember_p": 0.81
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "future_plan",
+    "kind": "edge",
+    "expected": "hubspot_integrations",
+    "got": {
+     "route": "hubspot_integrations",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "hypothetical_memory",
+    "kind": "edge",
+    "expected": "salesforce_integrations",
+    "got": {
+     "route": "salesforce_integrations",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S07": {
+  "id": "S07",
+  "job": "File a record into a deep category tree",
+  "cookbook": "Hierarchical classification",
+  "core": "1/1",
+  "edge": "4/4",
+  "requests": 73,
+  "input_tokens": 25756,
+  "cost_usd": 0.001082,
+  "api_seconds": 23.69,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "Beam width 3 vs greedy, one Choice request per tree node. Reversing sibling order changed the beam answer for 0 of 5 records."
+  ],
+  "cases": [
+   {
+    "id": "saas_for_hospitals",
+    "kind": "edge",
+    "expected": [
+     "Information/Software Publishers/Business Applications"
+    ],
+    "got": {
+     "beam3": "Information/Software Publishers/Business Applications",
+     "greedy": "Information/Software Publishers/Business Applications",
+     "beam3_reversed_options": "Information/Software Publishers/Business Applications",
+     "path_score": 0.881
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "brewery_tanks",
+    "kind": "edge",
+    "expected": [
+     "Manufacturing/All Other Manufacturing"
+    ],
+    "got": {
+     "beam3": "Manufacturing/All Other Manufacturing",
+     "greedy": "Manufacturing/All Other Manufacturing",
+     "beam3_reversed_options": "Manufacturing/All Other Manufacturing",
+     "path_score": 0.849
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "lab_contract_dev",
+    "kind": "edge",
+    "expected": [
+     "Professional Services/Computer Services/Custom Software Development"
+    ],
+    "got": {
+     "beam3": "Professional Services/Computer Services/Custom Software Development",
+     "greedy": "Professional Services/Computer Services/Custom Software Development",
+     "beam3_reversed_options": "Professional Services/Computer Services/Custom Software Development",
+     "path_score": 0.772
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "audience_data",
+    "kind": "edge",
+    "expected": [
+     "Information/Data Processing and Hosting/Data Brokers and Enrichment"
+    ],
+    "got": {
+     "beam3": "Information/Data Processing and Hosting/Data Brokers and Enrichment",
+     "greedy": "Information/Data Processing and Hosting/Data Brokers and Enrichment",
+     "beam3_reversed_options": "Information/Data Processing and Hosting/Data Brokers and Enrichment",
+     "path_score": 0.983
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "memory_chips",
+    "kind": "core",
+    "expected": [
+     "Manufacturing/Computer and Electronic Products/Semiconductors"
+    ],
+    "got": {
+     "beam3": "Manufacturing/Computer and Electronic Products/Semiconductors",
+     "greedy": "Manufacturing/Computer and Electronic Products/Semiconductors",
+     "beam3_reversed_options": "Manufacturing/Computer and Electronic Products/Semiconductors",
+     "path_score": 0.993
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S08": {
+  "id": "S08",
+  "job": "Classify, and fall back to a broader label when unsure",
+  "cookbook": "Classification using confidence",
+  "core": "0/0",
+  "edge": "5/5",
+  "requests": 5,
+  "input_tokens": 3570,
+  "cost_usd": 0.00015,
+  "api_seconds": 1.54,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "One Choice over 16 subcategories; below confidence 0.9 code reports the parent category instead (cookbook cutoff)."
+  ],
+  "cases": [
+   {
+    "id": "two_products",
+    "kind": "edge",
+    "expected": "not a confident specific label",
+    "got": {
+     "reported": "Sales and Marketing",
+     "top": "crm",
+     "confidence": 0.74,
+     "top_p": 0.76
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "buzzwords",
+    "kind": "edge",
+    "expected": "not a confident specific label",
+    "got": {
+     "reported": "IT Services",
+     "top": "managed_hosting",
+     "confidence": 0.2,
+     "top_p": 0.25
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "managed_dbs",
+    "kind": "edge",
+    "expected": "managed_hosting",
+    "got": {
+     "reported": "managed_hosting",
+     "top": "managed_hosting",
+     "confidence": 1.0,
+     "top_p": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "stops_leaks",
+    "kind": "edge",
+    "expected": "data_loss_prevention",
+    "got": {
+     "reported": "data_loss_prevention",
+     "top": "data_loss_prevention",
+     "confidence": 1.0,
+     "top_p": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "pivoted",
+    "kind": "edge",
+    "expected": "expense_management",
+    "got": {
+     "reported": "expense_management",
+     "top": "expense_management",
+     "confidence": 1.0,
+     "top_p": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S09": {
+  "id": "S09",
+  "job": "Sort a live message stream: show, highlight, hide or blur",
+  "cookbook": "Twitch chat filter",
+  "core": "0/0",
+  "edge": "5/5",
+  "requests": 5,
+  "input_tokens": 2778,
+  "cost_usd": 0.000117,
+  "api_seconds": 1.66,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "One request per message with 3 questions; actions decided by rules in code (hostile and secret thresholds 0.7)."
+  ],
+  "cases": [
+   {
+    "id": "spelled_out_password",
+    "kind": "edge",
+    "expected": [
+     "blur"
+    ],
+    "got": {
+     "action": "blur",
+     "category": "unsolicited_fix",
+     "margin": 0.21,
+     "hostile": 0.03,
+     "secret": 0.97
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "api_key",
+    "kind": "edge",
+    "expected": [
+     "blur"
+    ],
+    "got": {
+     "action": "blur",
+     "category": "unsolicited_fix",
+     "margin": 0.94,
+     "hostile": 0.02,
+     "secret": 0.81
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "panicked_question",
+    "kind": "edge",
+    "expected": [
+     "highlight",
+     "page_oncall"
+    ],
+    "got": {
+     "action": "page_oncall",
+     "category": "incident",
+     "margin": 0.82,
+     "hostile": 0.02,
+     "secret": 0.02
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "polite_pitch",
+    "kind": "edge",
+    "expected": [
+     "hide"
+    ],
+    "got": {
+     "action": "hide",
+     "category": "spam",
+     "margin": 1.0,
+     "hostile": 0.02,
+     "secret": 0.02
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "dutch_insult",
+    "kind": "edge",
+    "expected": [
+     "hide"
+    ],
+    "got": {
+     "action": "hide",
+     "category": "chatter",
+     "margin": 0.98,
+     "hostile": 0.95,
+     "secret": 0.02
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S10": {
+  "id": "S10",
+  "job": "Check a cheap extractor and escalate only the doubtful records",
+  "cookbook": "SDE cascade",
+  "core": "0/0",
+  "edge": "4/4",
+  "requests": 4,
+  "input_tokens": 3268,
+  "cost_usd": 0.000137,
+  "api_seconds": 1.29,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "Per-field Noul battery (2 checks per filled field, 1 per empty field), escalate if any > 0.7. Wrong records accepted: 0."
+  ],
+  "cases": [
+   {
+    "id": "k_units",
+    "kind": "edge",
+    "expected": {
+     "decision": "accept",
+     "wrong_fields": []
+    },
+    "got": {
+     "decision": "accept",
+     "flagged_fields": [],
+     "max": {}
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "former_ceo",
+    "kind": "edge",
+    "expected": {
+     "decision": "escalate",
+     "wrong_fields": [
+      "ceo_name"
+     ]
+    },
+    "got": {
+     "decision": "escalate",
+     "flagged_fields": [
+      "ceo_name"
+     ],
+     "max": {
+      "ceo_name::hallucinated": 0.96,
+      "ceo_name::off_target": 0.96
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "rounded_count",
+    "kind": "edge",
+    "expected": {
+     "decision": "escalate",
+     "wrong_fields": [
+      "employee_count"
+     ]
+    },
+    "got": {
+     "decision": "escalate",
+     "flagged_fields": [
+      "employee_count"
+     ],
+     "max": {
+      "employee_count::hallucinated": 0.98
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "one_letter_off",
+    "kind": "edge",
+    "expected": {
+     "decision": "escalate",
+     "wrong_fields": [
+      "ceo_name"
+     ]
+    },
+    "got": {
+     "decision": "escalate",
+     "flagged_fields": [
+      "ceo_name"
+     ],
+     "max": {
+      "ceo_name::hallucinated": 0.96,
+      "ceo_name::off_target": 0.33
+     }
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S11": {
+  "id": "S11",
+  "job": "Read a date from text and let code do the calendar maths",
+  "cookbook": "Date extraction",
+  "core": "2/2",
+  "edge": "3/4",
+  "requests": 12,
+  "input_tokens": 15773,
+  "cost_usd": 0.000662,
+  "api_seconds": 4.79,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "Seven Choice questions per document; code assembles the date, infers missing years and resolves weekdays; review below confidence 0.6. Today pinned to 2026-10-28."
+  ],
+  "cases": [
+   {
+    "id": "us_format_stated",
+    "kind": "edge",
+    "expected": [
+     "2027-03-04"
+    ],
+    "got": {
+     "outcome": "2027-03-04",
+     "proposed": "2027-03-04",
+     "confidence": 0.95,
+     "mode": "absolute"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "end_of_next_month",
+    "kind": "edge",
+    "expected": [
+     "2026-11-30",
+     "review"
+    ],
+    "got": {
+     "outcome": "2026-10-28",
+     "proposed": "2026-10-28",
+     "confidence": 0.73,
+     "mode": "relative"
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "ordinal_words",
+    "kind": "core",
+    "expected": [
+     "2027-01-21"
+    ],
+    "got": {
+     "outcome": "2027-01-21",
+     "proposed": "2027-01-21",
+     "confidence": 0.99,
+     "mode": "absolute"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "two_dates",
+    "kind": "edge",
+    "expected": [
+     "2026-04-01"
+    ],
+    "got": {
+     "outcome": "2026-04-01",
+     "proposed": "2026-04-01",
+     "confidence": 0.96,
+     "mode": "absolute"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "bare_friday",
+    "kind": "core",
+    "expected": [
+     "2026-10-30"
+    ],
+    "got": {
+     "outcome": "2026-10-30",
+     "proposed": "2026-10-30",
+     "confidence": 0.76,
+     "mode": "relative"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "past_without_year",
+    "kind": "code",
+    "expected": [
+     "2026-01-03"
+    ],
+    "got": {
+     "outcome": "2027-01-03",
+     "proposed": "2027-01-03",
+     "confidence": 0.82,
+     "mode": "absolute"
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "direct_date_comparison",
+    "kind": "edge",
+    "expected": "6/6 comparisons right",
+    "got": "6/6 right",
+    "pass": true,
+    "detail": "Asking the model to compare dates directly, which the docs advise against."
+   }
+  ]
+ },
+ "S12": {
+  "id": "S12",
+  "job": "Pick the right value from candidates that code found",
+  "cookbook": "Pre-parsed value extraction",
+  "core": "2/2",
+  "edge": "3/3",
+  "requests": 5,
+  "input_tokens": 2528,
+  "cost_usd": 0.000106,
+  "api_seconds": 1.49,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "Regular expressions find every candidate; one Choice picks among them plus \"none\"; code copies the exact text."
+  ],
+  "cases": [
+   {
+    "id": "current_number",
+    "kind": "edge",
+    "expected": "+44 161 496 0777",
+    "got": {
+     "picked": "+44 161 496 0777",
+     "confidence": 1.0,
+     "candidates": [
+      "+44 161 496 0000",
+      "+44 161 496 0777"
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "gross_total",
+    "kind": "edge",
+    "expected": "$9,600.00",
+    "got": {
+     "picked": "$9,600.00",
+     "confidence": 1.0,
+     "candidates": [
+      "$8,000.00",
+      "$1,600.00",
+      "$9,600.00"
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "net_price",
+    "kind": "core",
+    "expected": "$8,000.00",
+    "got": {
+     "picked": "$8,000.00",
+     "confidence": 1.0,
+     "candidates": [
+      "$8,000.00",
+      "$1,600.00",
+      "$9,600.00"
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "remittance",
+    "kind": "core",
+    "expected": "remit@halvorsen.example",
+    "got": {
+     "picked": "remit@halvorsen.example",
+     "confidence": 1.0,
+     "candidates": [
+      "remit@halvorsen.example",
+      "orders@halvorsen.example"
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "vat_id_absent",
+    "kind": "edge",
+    "expected": "none",
+    "got": {
+     "picked": "none",
+     "confidence": 1.0,
+     "candidates": [
+      "+44 161 496 0000",
+      "+44 161 496 0777"
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S13": {
+  "id": "S13",
+  "job": "Rebuild headings, lists and code from flattened text",
+  "cookbook": "Structure recovery",
+  "core": "3/7",
+  "edge": "3/4",
+  "requests": 2,
+  "input_tokens": 2859,
+  "cost_usd": 0.00012,
+  "api_seconds": 0.69,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "Pass 1: one Noul per adjacent line pair (join bar 0.2 after an unfinished line, 0.5 after end punctuation). Pass 2: one Choice per block. Two requests in total."
+  ],
+  "cases": [
+   {
+    "id": "line_joins",
+    "kind": "core",
+    "expected": "12 of 12 join decisions right",
+    "got": {
+     "right": "11 of 12",
+     "wrong": [
+      "L003 (0.52)"
+     ]
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "B000 2. Configure replication",
+    "kind": "edge",
+    "expected": "heading",
+    "got": {
+     "type": "heading",
+     "confidence": 0.45
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B001 Edit the primary configurati",
+    "kind": "core",
+    "expected": "paragraph",
+    "got": {
+     "type": "list_item",
+     "confidence": 0.52
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "B002 wal_level: replica",
+    "kind": "core",
+    "expected": "code",
+    "got": {
+     "type": "code",
+     "confidence": 0.92
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B003 max_wal_senders: 10",
+    "kind": "core",
+    "expected": "code",
+    "got": {
+     "type": "code",
+     "confidence": 0.78
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B004 2. Restart the primary so th",
+    "kind": "edge",
+    "expected": "list_item",
+    "got": {
+     "type": "list_item",
+     "confidence": 0.96
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B005 As the vendor guide puts it,",
+    "kind": "edge",
+    "expected": "quote",
+    "got": {
+     "type": "quote",
+     "confidence": 0.92
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B006 Tip: check pg_stat_replicati",
+    "kind": "core",
+    "expected": "callout",
+    "got": {
+     "type": "callout",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "B007 Replicas that fall more than",
+    "kind": "core",
+    "expected": "paragraph",
+    "got": {
+     "type": "callout",
+     "confidence": 0.34
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "B008 3. Verify",
+    "kind": "core",
+    "expected": "heading",
+    "got": {
+     "type": "list_item",
+     "confidence": 0.78
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "B009 Run SELECT * FROM pg_stat_re",
+    "kind": "edge",
+    "expected": "paragraph",
+    "got": {
+     "type": "list_item",
+     "confidence": 0.54
+    },
+    "pass": false,
+    "detail": ""
+   }
+  ]
+ },
+ "S14": {
+  "id": "S14",
+  "job": "Move the most useful search result to the top",
+  "cookbook": "Re-ranking",
+  "core": "4/4",
+  "edge": "2/2",
+  "requests": 60,
+  "input_tokens": 23462,
+  "cost_usd": 0.000985,
+  "api_seconds": 20.61,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "Keyword (BM25) shortlist of 10 from 30 articles; one Noul per ticket-article pair; sort by probability. Pass = right article ranked first.",
+   "Versus keyword rank: 1 better, 5 same, 0 worse, 0 not shortlisted."
+  ],
+  "cases": [
+   {
+    "id": "replica_cancelled",
+    "kind": "core",
+    "expected": "a20",
+    "got": {
+     "keyword_rank_of_answer": 1,
+     "jev_rank_of_answer": 1,
+     "top_scores": {
+      "a20": 0.92,
+      "a11": 0.75,
+      "a27": 0.43
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "schema_change_stuck",
+    "kind": "core",
+    "expected": "a21",
+    "got": {
+     "keyword_rank_of_answer": 1,
+     "jev_rank_of_answer": 1,
+     "top_scores": {
+      "a21": 0.48,
+      "a12": 0.42,
+      "a29": 0.34
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "accents_garbled",
+    "kind": "core",
+    "expected": "a19",
+    "got": {
+     "keyword_rank_of_answer": 2,
+     "jev_rank_of_answer": 1,
+     "top_scores": {
+      "a19": 0.88,
+      "a03": 0.04,
+      "a29": 0.04
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "hour_off",
+    "kind": "core",
+    "expected": "a18",
+    "got": {
+     "keyword_rank_of_answer": 1,
+     "jev_rank_of_answer": 1,
+     "top_scores": {
+      "a18": 0.75,
+      "a13": 0.04,
+      "a29": 0.04
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "missing_numbers",
+    "kind": "edge",
+    "expected": "a17",
+    "got": {
+     "keyword_rank_of_answer": 1,
+     "jev_rank_of_answer": 1,
+     "top_scores": {
+      "a17": 0.43,
+      "a26": 0.16,
+      "a19": 0.07
+     }
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "space_not_freed",
+    "kind": "edge",
+    "expected": "a14",
+    "got": {
+     "keyword_rank_of_answer": 1,
+     "jev_rank_of_answer": 1,
+     "top_scores": {
+      "a14": 0.88,
+      "a12": 0.8,
+      "a03": 0.09
+     }
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S15": {
+  "id": "S15",
+  "job": "Find the exact line in a long document that answers a question",
+  "cookbook": "Line-by-line search",
+  "core": "2/2",
+  "edge": "4/4",
+  "requests": 6,
+  "input_tokens": 13130,
+  "cost_usd": 0.000551,
+  "api_seconds": 2.01,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "Whole 70-line document in one request per query: a Choice over line ids plus an \"is it answered\" Noul (found >= 0.7, absent <= 0.35)."
+  ],
+  "cases": [
+   {
+    "id": "move_region",
+    "kind": "edge",
+    "expected": [
+     "L047"
+    ],
+    "got": {
+     "verdict": "found",
+     "exists": 0.98,
+     "top_line": "L047",
+     "line_p": 1.0,
+     "text": "Customer Data is hosted in the region chosen in the Order Form and is not moved outside that region without the Customer's written consent."
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "breach_notice",
+    "kind": "core",
+    "expected": [
+     "L050"
+    ],
+    "got": {
+     "verdict": "found",
+     "exists": 0.99,
+     "top_line": "L050",
+     "line_p": 1.0,
+     "text": "Provider maintains ISO 27001 certification, encrypts Customer Data at rest and in transit, and notifies the Customer of any personal data breach within 48 hours of becoming aware of it."
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "uncapped_dp",
+    "kind": "edge",
+    "expected": [
+     "L061",
+     "L062"
+    ],
+    "got": {
+     "verdict": "found",
+     "exists": 0.91,
+     "top_line": "L062",
+     "line_p": 0.85,
+     "text": "The cap does not apply to breaches of confidentiality, data protection obligations or the Customer's payment obligations."
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "price_rise",
+    "kind": "core",
+    "expected": [
+     "L042"
+    ],
+    "got": {
+     "verdict": "found",
+     "exists": 0.99,
+     "top_line": "L042",
+     "line_p": 1.0,
+     "text": "Provider may increase fees at renewal by no more than 5%."
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "sso_absent",
+    "kind": "edge",
+    "expected": "absent",
+    "got": {
+     "verdict": "absent",
+     "exists": 0.03,
+     "top_line": "L011",
+     "line_p": 0.45,
+     "text": "Support is available by email and through the support portal."
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "negated_question",
+    "kind": "edge",
+    "expected": [
+     "L018"
+    ],
+    "got": {
+     "verdict": "found",
+     "exists": 0.97,
+     "top_line": "L018",
+     "line_p": 1.0,
+     "text": "Backups are stored in a different region from the primary database."
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S16": {
+  "id": "S16",
+  "job": "Decide whether two records are the same thing",
+  "cookbook": "Knowledge graph entity alignment",
+  "core": "1/1",
+  "edge": "3/4",
+  "requests": 5,
+  "input_tokens": 2325,
+  "cost_usd": 9.8e-05,
+  "api_seconds": 1.76,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "One Score (3 levels) plus three field Nouls per pair; code rounds the score: >= 1.5 merge, >= 0.5 curator, else separate. Unlike the cookbook, we score against labels."
+  ],
+  "cases": [
+   {
+    "id": "rebrand",
+    "kind": "edge",
+    "expected": [
+     "curator",
+     "merge"
+    ],
+    "got": {
+     "route": "merge",
+     "score": 1.99,
+     "confidence": 0.98,
+     "name": 0.24,
+     "domain": 0.02,
+     "place": 0.98
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "holding_company",
+    "kind": "edge",
+    "expected": [
+     "curator",
+     "separate"
+    ],
+    "got": {
+     "route": "separate",
+     "score": 0.45,
+     "confidence": 0.34,
+     "name": 0.02,
+     "domain": 0.02,
+     "place": 0.01
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "same_founder",
+    "kind": "edge",
+    "expected": [
+     "separate"
+    ],
+    "got": {
+     "route": "curator",
+     "score": 0.64,
+     "confidence": 0.43,
+     "name": 0.02,
+     "domain": 0.02,
+     "place": 0.98
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "generic_name",
+    "kind": "edge",
+    "expected": [
+     "curator",
+     "separate"
+    ],
+    "got": {
+     "route": "curator",
+     "score": 1.04,
+     "confidence": 0.82,
+     "name": 0.97,
+     "domain": 0.02,
+     "place": 0.02
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "address_vs_postcode",
+    "kind": "core",
+    "expected": [
+     "merge"
+    ],
+    "got": {
+     "route": "merge",
+     "score": 1.84,
+     "confidence": 0.76,
+     "name": 0.93,
+     "domain": 0.99,
+     "place": 0.5
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S17": {
+  "id": "S17",
+  "job": "Tick off a checklist as a conversation happens",
+  "cookbook": "Intelliprompter",
+  "core": "2/2",
+  "edge": "3/3",
+  "requests": 7,
+  "input_tokens": 5211,
+  "cost_usd": 0.000219,
+  "api_seconds": 2.61,
+  "notes": [
+   "Round 2: an unnamed system, an unmeasured size, an undecided decision-maker and no budget should all stay unticked until truly covered."
+  ],
+  "cases": [
+   {
+    "id": "database",
+    "kind": "core",
+    "expected": "ticked at chunk 3",
+    "got": {
+     "ticked_at_chunk": 3,
+     "score": 3.98
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "volume",
+    "kind": "edge",
+    "expected": "never ticked",
+    "got": {
+     "ticked_at_chunk": null,
+     "score": null
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "decider",
+    "kind": "edge",
+    "expected": "ticked at chunk 7",
+    "got": {
+     "ticked_at_chunk": 7,
+     "score": 3.99
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "compliance",
+    "kind": "core",
+    "expected": "ticked at chunk 6",
+    "got": {
+     "ticked_at_chunk": 6,
+     "score": 3.68
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "budget",
+    "kind": "edge",
+    "expected": "never ticked",
+    "got": {
+     "ticked_at_chunk": null,
+     "score": null
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S18": {
+  "id": "S18",
+  "job": "Ask more than once, act only when answers agree",
+  "cookbook": "Self-consistency: choices and nouls",
+  "core": "1/1",
+  "edge": "3/3",
+  "requests": 32,
+  "input_tokens": 13528,
+  "cost_usd": 0.000568,
+  "api_seconds": 11.73,
+  "notes": [
+   "Round 2 stress cases; same method as round 1.",
+   "8 runs per ticket with a throwaway uid; odd runs reverse the option order. Code abstains below top probability 0.6. Abstained: 1/32 answers."
+  ],
+  "cases": [
+   {
+    "id": "vague_broken",
+    "kind": "edge",
+    "expected": "no two different automatic labels",
+    "got": {
+     "original_order": {
+      "Outage": 4
+     },
+     "reversed_order": {
+      "Outage": 4
+     },
+     "top_p_range": [
+      1.0,
+      1.0
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "credit_for_outage",
+    "kind": "edge",
+    "expected": "no two different automatic labels",
+    "got": {
+     "original_order": {
+      "Billing": 4
+     },
+     "reversed_order": {
+      "Billing": 4
+     },
+     "top_p_range": [
+      0.96,
+      0.97
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "slow_and_strange",
+    "kind": "edge",
+    "expected": "no two different automatic labels",
+    "got": {
+     "original_order": {
+      "Performance": 3,
+      "abstain": 1
+     },
+     "reversed_order": {
+      "Performance": 4
+     },
+     "top_p_range": [
+      0.59,
+      0.69
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "clear_performance",
+    "kind": "core",
+    "expected": "Performance",
+    "got": {
+     "original_order": {
+      "Performance": 4
+     },
+     "reversed_order": {
+      "Performance": 4
+     },
+     "top_p_range": [
+      1.0,
+      1.0
+     ]
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S20": {
+  "id": "S20",
+  "job": "Turn free text into numbers a prediction model can use",
+  "cookbook": "Autoresearch feature discovery",
+  "core": "1/1",
+  "edge": "0/0",
+  "requests": 800,
+  "input_tokens": 334184,
+  "cost_usd": 0.014036,
+  "api_seconds": 261.11,
+  "notes": [
+   "Control: the same Jev features against randomly shuffled labels must score near 0.5, or the pipeline is leaking. Reuses cached answers."
+  ],
+  "cases": [
+   {
+    "id": "shuffled_labels_control",
+    "kind": "core",
+    "expected": "AUC between 0.44 and 0.56 when labels are shuffled",
+    "got": {
+     "auc": 0.495,
+     "se": 0.006
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "S21": {
+  "id": "S21",
+  "job": "Read scanned documents: what is it, is it signed, where is the total",
+  "cookbook": "Images and Box (not a cookbook)",
+  "core": "5/5",
+  "edge": "8/8",
+  "requests": 5,
+  "input_tokens": 25197,
+  "cost_usd": 0.001058,
+  "api_seconds": 12.96,
+  "notes": [
+   "Round 2 scans: noise and a 3-degree skew, a printed \"signature pending\" line, a restyled rotated stamp, a VAT breakdown with two totals, and a 330-pixel-wide copy."
+  ],
+  "cases": [
+   {
+    "id": "noisy_skewed:kind",
+    "kind": "core",
+    "expected": "invoice",
+    "got": {
+     "kind": "invoice",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "noisy_skewed:signed",
+    "kind": "edge",
+    "expected": true,
+    "got": 0.75,
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "noisy_skewed:total_pick",
+    "kind": "edge",
+    "expected": "$3,820.00",
+    "got": {
+     "picked": "$3,820.00",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "pending_signature:kind",
+    "kind": "core",
+    "expected": "invoice",
+    "got": {
+     "kind": "invoice",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "pending_signature:signed",
+    "kind": "edge",
+    "expected": false,
+    "got": 0.02,
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "restyled_stamp:kind",
+    "kind": "core",
+    "expected": "invoice",
+    "got": {
+     "kind": "invoice",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "restyled_stamp:stamp",
+    "kind": "edge",
+    "expected": "PAID",
+    "got": {
+     "stamp": "PAID",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "vat_totals:kind",
+    "kind": "core",
+    "expected": "invoice",
+    "got": {
+     "kind": "invoice",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "vat_totals:total_pick",
+    "kind": "edge",
+    "expected": "$4,584.00",
+    "got": {
+     "picked": "$4,584.00",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "vat_totals:over_4000",
+    "kind": "edge",
+    "expected": true,
+    "got": 0.99,
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "vat_totals:total_box",
+    "kind": "edge",
+    "expected": "box centred on the total",
+    "got": {
+     "found": true,
+     "iou": 0.39
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "low_resolution:kind",
+    "kind": "core",
+    "expected": "invoice",
+    "got": {
+     "kind": "invoice",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "low_resolution:total_pick",
+    "kind": "edge",
+    "expected": "$3,820.00",
+    "got": {
+     "picked": "$3,820.00",
+     "confidence": 1.0
+    },
+    "pass": true,
+    "detail": ""
+   }
+  ]
+ },
+ "R01": {
+  "id": "R01",
+  "job": "Turn a plain-English request into the right action (with remedy)",
+  "cookbook": "Function calling",
+  "core": "2/7",
+  "edge": "7/7",
+  "requests": 14,
+  "input_tokens": 18095,
+  "cost_usd": 0.00076,
+  "api_seconds": 5.73,
+  "notes": [
+   "Remedy: every argument menu gains \"not on the list\", plus one Noul asking whether the request wants anything extra; code refuses to run if either fires."
+  ],
+  "cases": [
+   {
+    "id": "contacts_parquet_week",
+    "kind": "core",
+    "expected": {
+     "tool": "export_table",
+     "args": {
+      "table": "contacts",
+      "format": "parquet",
+      "since": "1w"
+     }
+    },
+    "got": {
+     "tool": "export_table",
+     "args": {
+      "table": "contacts",
+      "format": "parquet",
+      "since": "1w"
+     },
+     "extra": 0.94,
+     "auto_runs": false
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "count_invoices",
+    "kind": "core",
+    "expected": {
+     "tool": "row_count",
+     "args": {
+      "table": "invoices"
+     }
+    },
+    "got": {
+     "tool": "row_count",
+     "args": {
+      "table": "invoices"
+     },
+     "extra": 0.43,
+     "auto_runs": true
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "dupes_by_domain",
+    "kind": "core",
+    "expected": {
+     "tool": "find_duplicates",
+     "args": {
+      "table": "accounts",
+      "key": "domain"
+     }
+    },
+    "got": {
+     "tool": "find_duplicates",
+     "args": {
+      "table": "accounts",
+      "key": "domain"
+     },
+     "extra": 0.79,
+     "auto_runs": false
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "nightly_billing_backup",
+    "kind": "core",
+    "expected": {
+     "tool": "schedule_backup",
+     "args": {
+      "database": "billing",
+      "frequency": "daily"
+     }
+    },
+    "got": {
+     "tool": "schedule_backup",
+     "args": {
+      "database": "billing",
+      "frequency": "daily"
+     },
+     "extra": 0.75,
+     "auto_runs": false
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "invoices_json_no_window",
+    "kind": "core",
+    "expected": {
+     "tool": "export_table",
+     "args": {
+      "table": "invoices",
+      "format": "json"
+     }
+    },
+    "got": {
+     "tool": "export_table",
+     "args": {
+      "table": "invoices",
+      "format": "json"
+     },
+     "extra": 0.16,
+     "auto_runs": true
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "negated_then_count",
+    "kind": "edge",
+    "expected": {
+     "tool": "row_count",
+     "args": {
+      "table": "contacts"
+     }
+    },
+    "got": {
+     "tool": "row_count",
+     "args": {
+      "table": "contacts"
+     },
+     "extra": 0.39,
+     "auto_runs": true
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "unsupported_values",
+    "kind": "edge",
+    "expected": "do not run",
+    "got": {
+     "tool": "export_table",
+     "args": {
+      "table": "not_listed",
+      "format": "not_listed"
+     },
+     "extra": 0.11,
+     "auto_runs": false
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "lookalike_action",
+    "kind": "edge",
+    "expected": "do not run",
+    "got": {
+     "tool": "none_of_these",
+     "args": {},
+     "extra": 0.39,
+     "auto_runs": false
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "excel_synonym",
+    "kind": "edge",
+    "expected": "do not run",
+    "got": {
+     "tool": "export_table",
+     "args": {
+      "table": "not_listed",
+      "format": "not_listed"
+     },
+     "extra": 0.1,
+     "auto_runs": false
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "fifteen_minutes",
+    "kind": "edge",
+    "expected": "do not run",
+    "got": {
+     "tool": "schedule_backup",
+     "args": {
+      "database": "crm",
+      "frequency": "not_listed"
+     },
+     "extra": 0.16,
+     "auto_runs": false
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "two_tables",
+    "kind": "edge",
+    "expected": "do not run",
+    "got": {
+     "tool": "row_count",
+     "args": {
+      "table": "not_listed"
+     },
+     "extra": 0.95,
+     "auto_runs": false
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "filter_unsupported",
+    "kind": "edge",
+    "expected": "do not run",
+    "got": {
+     "tool": "export_table",
+     "args": {
+      "table": "contacts",
+      "format": "csv"
+     },
+     "extra": 0.93,
+     "auto_runs": false
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "slangy",
+    "kind": "core",
+    "expected": {
+     "tool": "export_table",
+     "args": {
+      "table": "invoices",
+      "format": "csv",
+      "since": "1mo"
+     }
+    },
+    "got": {
+     "tool": "export_table",
+     "args": {
+      "table": "invoices",
+      "format": "csv",
+      "since": "1mo"
+     },
+     "extra": 0.9,
+     "auto_runs": false
+    },
+    "pass": false,
+    "detail": ""
+   },
+   {
+    "id": "weekly_warehouse",
+    "kind": "core",
+    "expected": {
+     "tool": "schedule_backup",
+     "args": {
+      "database": "warehouse",
+      "frequency": "weekly"
+     }
+    },
+    "got": {
+     "tool": "schedule_backup",
+     "args": {
+      "database": "warehouse",
+      "frequency": "weekly"
+     },
+     "extra": 0.9,
+     "auto_runs": false
+    },
+    "pass": false,
+    "detail": ""
+   }
+  ]
+ },
+ "R11": {
+  "id": "R11",
+  "job": "Read a date from text and let code do the calendar maths (with remedy)",
+  "cookbook": "Date extraction",
+  "core": "7/7",
+  "edge": "6/6",
+  "requests": 14,
+  "input_tokens": 33385,
+  "cost_usd": 0.001402,
+  "api_seconds": 4.75,
+  "notes": [
+   "Remedy: the \"relative to\" menu gains \"something else\", and a Noul flags dates that could be read two ways; code sends both to review."
+  ],
+  "cases": [
+   {
+    "id": "explicit",
+    "kind": "core",
+    "expected": [
+     "2027-03-01"
+    ],
+    "got": {
+     "outcome": "2027-03-01",
+     "why": "absolute",
+     "ambiguous": 0.14,
+     "anchor": "none"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "no_year",
+    "kind": "core",
+    "expected": [
+     "2026-11-14"
+    ],
+    "got": {
+     "outcome": "2026-11-14",
+     "why": "absolute",
+     "ambiguous": 0.12,
+     "anchor": "none"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "next_tuesday",
+    "kind": "core",
+    "expected": [
+     "2026-11-03"
+    ],
+    "got": {
+     "outcome": "2026-11-03",
+     "why": "relative",
+     "ambiguous": 0.05,
+     "anchor": "weekday"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "not_stated",
+    "kind": "core",
+    "expected": [
+     "none",
+     "review"
+    ],
+    "got": {
+     "outcome": "none",
+     "why": "none",
+     "ambiguous": 0.04,
+     "anchor": "none"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "today",
+    "kind": "core",
+    "expected": [
+     "2026-10-28"
+    ],
+    "got": {
+     "outcome": "2026-10-28",
+     "why": "relative",
+     "ambiguous": 0.04,
+     "anchor": "today"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "twelve_months_later",
+    "kind": "edge",
+    "expected": [
+     "2027-01-15",
+     "review"
+    ],
+    "got": {
+     "outcome": "review",
+     "why": "unsupported relative form",
+     "ambiguous": 0.06,
+     "anchor": "other"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "ambiguous_numeric",
+    "kind": "edge",
+    "expected": [
+     "review"
+    ],
+    "got": {
+     "outcome": "review",
+     "why": "ambiguous",
+     "ambiguous": 0.87,
+     "anchor": "none"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "days_after_invoice",
+    "kind": "edge",
+    "expected": [
+     "2026-04-02",
+     "review"
+    ],
+    "got": {
+     "outcome": "review",
+     "why": "unsupported relative form",
+     "ambiguous": 0.16,
+     "anchor": "other"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "us_format_stated",
+    "kind": "edge",
+    "expected": [
+     "2027-03-04"
+    ],
+    "got": {
+     "outcome": "2027-03-04",
+     "why": "absolute",
+     "ambiguous": 0.43,
+     "anchor": "none"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "end_of_next_month",
+    "kind": "edge",
+    "expected": [
+     "2026-11-30",
+     "review"
+    ],
+    "got": {
+     "outcome": "review",
+     "why": "unsupported relative form",
+     "ambiguous": 0.07,
+     "anchor": "other"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "ordinal_words",
+    "kind": "core",
+    "expected": [
+     "2027-01-21"
+    ],
+    "got": {
+     "outcome": "2027-01-21",
+     "why": "absolute",
+     "ambiguous": 0.06,
+     "anchor": "none"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "two_dates",
+    "kind": "edge",
+    "expected": [
+     "2026-04-01"
+    ],
+    "got": {
+     "outcome": "2026-04-01",
+     "why": "absolute",
+     "ambiguous": 0.05,
+     "anchor": "none"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "bare_friday",
+    "kind": "core",
+    "expected": [
+     "2026-10-30"
+    ],
+    "got": {
+     "outcome": "2026-10-30",
+     "why": "relative",
+     "ambiguous": 0.06,
+     "anchor": "weekday"
+    },
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "id": "past_without_year",
+    "kind": "code",
+    "expected": [
+     "2026-01-03"
+    ],
+    "got": {
+     "outcome": "2027-01-03",
+     "why": "absolute",
+     "ambiguous": 0.14,
+     "anchor": "none"
+    },
+    "pass": false,
+    "detail": ""
+   }
+  ]
+ }
+}

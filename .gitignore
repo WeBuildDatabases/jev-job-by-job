@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.env
+.env.*
+video/build/
+images/.edge-profile/
+images/review/
+wordpress-package/
+wordpress-package.zip
+ARTICLE-site-preview.html
+images/site/
