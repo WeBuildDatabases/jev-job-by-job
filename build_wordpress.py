@@ -12,9 +12,20 @@ body_md = md[md.index("\n") + 1:]
 stand_md = re.search(r"\A\s*(\*.+?\*)\s*$", body_md, re.M).group(1)
 excerpt = re.sub(r"\*+", "", stand_md)
 body_md = body_md.replace(stand_md, "", 1).replace("\n---\n", "\n", 1)
-body_md = body_md.replace("<details open", '<details markdown="1" open')
+body_md = body_md.replace("<details id=", '<details markdown="1" id=')
 body = markdown.markdown(body_md, extensions=["tables", "toc", "md_in_html"])
 body = body.replace(' markdown="1"', "")
+# part headings are h1 in the markdown; the post title is the page's h1, so they become h2.part
+body = re.sub(r'<h1 id="([^"]+)">(.+?)</h1>', r'<h2 class="part" id="\1">\2</h2>', body)
+# external links open in a new tab; in-page (#) links do not
+body = re.sub(r'<a href="(https?://[^"]+)"', r'<a href="\1" target="_blank" rel="noopener"', body)
+# scoreboard: part rows span the table, the total row is marked, numeric cells are tagged
+body = body.replace("<table>", '<table class="scoreboard">', 1)
+body = re.sub(r'<tr>\n<td></td>\n<td>(<strong>Part \d+:.*?</strong>)</td>\n<td></td>\n<td></td>\n<td></td>\n</tr>',
+              r'<tr class="part"><td colspan="5">\1</td></tr>', body)
+body = body.replace('<tr>\n<td></td>\n<td><strong>All jobs</strong></td>', '<tr class="total">\n<td></td>\n<td><strong>All jobs</strong></td>')
+body = re.sub(r'<th>(Core|Edge)</th>', r'<th class="num">\1</th>', body)
+body = re.sub(r'(<tr(?: class="total")?>\n<td>\d*</td>\n<td>.*?</td>\n)<td>(.*?)</td>\n<td>(.*?)</td>', r'\1<td class="num">\2</td>\n<td class="num">\3</td>', body)
 stand_html = re.sub(r"^<p>|</p>$", "", markdown.markdown(stand_md).strip())
 body = f'<p class="standfirst">{stand_html}</p>\n' + body   # the excerpt is for listings; the post itself opens with the standfirst
 (out / "article-body.html").write_text(body + "\n", encoding="utf-8")
@@ -41,21 +52,41 @@ for m in re.finditer(r'^(## .+)$|^!\[([^\]]*)\]\(images/([^)]+)\)', md, flags=re
 with open(out / "alt-text.csv", "w", newline="", encoding="utf-8") as f:
     w = csv.DictWriter(f, fieldnames=["file", "section", "alt"]); w.writeheader(); w.writerows(rows)
 
-(out / "styles.css").write_text("""/* Jev article: add to the post's Custom CSS or the theme's additional CSS. Scope under .entry-content if needed. */
-.jev-article h2 { scroll-margin-top: 96px; }
-.jev-article .standfirst { font-size: 19px; line-height: 1.5; color: #333; margin: 0 0 28px; }
-.jev-article img { display: block; width: 100%; max-width: 1000px; height: auto; margin: 22px 0; border: 1px solid #E3E6EA; }
-.jev-article table { border-collapse: collapse; width: 100%; font-size: 15px; margin: 16px 0; }
-.jev-article th, .jev-article td { padding: 8px 10px; border-bottom: 1px solid #E3E6EA; text-align: left; vertical-align: top; }
-.jev-article th { font-weight: 600; color: #082241; }
-.jev-article code { font: 14px "IBM Plex Mono", Consolas, monospace; background: #F1F3F5; padding: 1px 4px; }
+(out / "styles.css").write_text("""/* Jev article. Scoped to .jev-article; the post body is wrapped in that div. */
+.jev-article { max-width: 760px; color: #2B2F36; }
+.jev-article p, .jev-article li { font-size: 17px; line-height: 1.65; }
+.jev-article p { margin: 0 0 18px; }
+.jev-article li { margin: 0 0 7px; }
+.jev-article ul, .jev-article ol { margin: 0 0 20px; padding-left: 28px; }
+.jev-article a { color: #244C79; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: #B9C3D1; }
+.jev-article a:hover { color: #082241; text-decoration-color: #082241; }
+.jev-article strong { color: #082241; }
+.jev-article h2 { font-size: 26px; line-height: 1.25; color: #082241; margin: 44px 0 14px; scroll-margin-top: 110px; }
+.jev-article h2.part { font-size: 21px; letter-spacing: .01em; color: #704184; margin: 56px 0 10px; padding-top: 22px; border-top: 1px solid #E3E6EA; }
+.jev-article hr { border: 0; height: 0; margin: 0; }
+.jev-article .standfirst { font-size: 20px; line-height: 1.55; color: #3B4252; margin: 0 0 30px; }
+.jev-article img { display: block; width: 100%; height: auto; margin: 26px 0; border: 1px solid #E3E6EA; }
+.jev-article code { font: 14.5px/1.4 "IBM Plex Mono", Consolas, monospace; background: #F1F3F5; padding: 1px 5px; border-radius: 3px; }
+.jev-article table.scoreboard { border-collapse: collapse; width: 100%; font-size: 15px; line-height: 1.4; margin: 18px 0 28px; }
+.jev-article table.scoreboard th, .jev-article table.scoreboard td { padding: 9px 10px; border-bottom: 1px solid #E3E6EA; text-align: left; vertical-align: top; }
+.jev-article table.scoreboard th { font-weight: 600; color: #082241; border-bottom: 2px solid #082241; padding-bottom: 8px; }
+.jev-article table.scoreboard td:first-child { color: #758190; width: 2.2em; padding-left: 0; }
+.jev-article table.scoreboard th:first-child { padding-left: 0; }
+.jev-article table.scoreboard .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; width: 4.5em; }
+.jev-article table.scoreboard td a { text-decoration: none; color: #244C79; }
+.jev-article table.scoreboard td a:hover { text-decoration: underline; }
+.jev-article table.scoreboard tr.part td { padding: 22px 0 6px; border-bottom: 1px solid #082241; }
+.jev-article table.scoreboard tr.part strong { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #704184; }
+.jev-article table.scoreboard tr.total td { border-bottom: 0; border-top: 2px solid #082241; padding-top: 12px; }
 .jev-article blockquote.pull { margin: 36px 0; padding: 0 0 0 28px; max-width: 720px; border-left: 3px solid #B9C3D1; background: none; font-size: 26px; line-height: 1.35; font-weight: 500; color: #082241; }
 .jev-article blockquote.pull strong { font-weight: 500; }
-.jev-article details { margin: 18px 0 22px; padding: 12px 18px; border: 1px solid #E3E6EA; background: #fff; }
-.jev-article summary { cursor: pointer; font-size: 15px; color: #6B7280; letter-spacing: .02em; }
+.jev-article details { margin: 18px 0 24px; padding: 12px 18px; border: 1px solid #E3E6EA; border-radius: 4px; background: #fff; }
+.jev-article details[open] { padding-bottom: 6px; }
+.jev-article summary { cursor: pointer; font-size: 15px; color: #6B7280; letter-spacing: .02em; list-style-position: inside; }
+.jev-article summary:hover strong { text-decoration: underline; }
 .jev-article summary strong { font-weight: 600; color: #082241; }
-.jev-article details blockquote { margin: 12px 0 4px; padding: 0 0 0 16px; border-left: 3px solid #D9D4C7; font-size: 15px; line-height: 1.55; color: #3B4252; }
-.jev-article details blockquote p { margin: 0 0 10px; }
+.jev-article details blockquote { margin: 14px 0 6px; padding: 0 0 0 16px; border-left: 3px solid #D9D4C7; font-size: 15px; line-height: 1.55; color: #3B4252; }
+.jev-article details blockquote p { font-size: 15px; margin: 0 0 10px; }
 """, encoding="utf-8")
 
 words = len(re.sub(r"<[^>]+>", " ", body).split())
@@ -73,7 +104,7 @@ meta = {
     "reading_time_minutes": round(words / 230),
     "figures": len(imgs),
     "anchors": {"sections": "h2 ids are generated from the heading text; the scoreboard links depend on them",
-                "prompts": "details blocks carry ids prompts-1 to prompts-21; the intro 'View the prompts' link targets prompts-1"},
+                "prompts": "details blocks carry ids prompts-1 to prompts-21, closed by default; the intro 'View the prompts' link targets prompts-1"},
 }
 (out / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
 
@@ -94,7 +125,7 @@ Everything here is generated from `ARTICLE.md` by `build_wordpress.py`. Edit the
 2. In `article-body.html`, replace `src="images/` with the upload URL prefix, for example `src="/wp-content/uploads/2026/10/`. One search-and-replace.
 3. Create the post with the title, slug and excerpt from `meta.json`. Set `header-1200x630.png` as the featured image and `share-card-1200x630.png` as the social image (Yoast / Rank Math "Social" tab).
 4. Paste the body inside `<div class="jev-article">…</div>` and add `styles.css`.
-5. Check: the scoreboard links jump to their sections, the "View the prompts" link in the intro lands on the first prompt block, the 21 "What we asked Jev" blocks are open and collapsible, and the pull quote has no background.
+5. Check: the scoreboard links jump to their sections, the "View the prompts" link in the intro lands on the first prompt block, the 21 "What we asked Jev" blocks are closed and open on click, and the pull quote has no background.
 
 ## Notes
 - The three outbound links in "How we tested" point at the public repo, https://github.com/WeBuildDatabases/jev-job-by-job. No relative links remain.
