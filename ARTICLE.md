@@ -1,6 +1,6 @@
 # Jev, job by job: what it does, what it doesn't, and when to reach for it
 
-*We tested all 21 official TypeSafe cookbooks, 20 jobs plus images: 307 examples, 27 follow-up checks, 3.3 cents, every answer locked before Jev saw one.* ***Bottom line: used correctly, Jev is very cool. Used loosely, it picks the wrong answer with confidence.***
+*We tested all 21 official TypeSafe cookbooks, 20 jobs plus images: 307 examples, 27 follow-up checks, 3.3 cents, every answer locked before Jev saw one.* ***Bottom line: used correctly, Jev is faster, cheaper, and makes work possible that was too slow or too expensive to try before. Used loosely, it picks the wrong answer with confidence.***
 
 ---
 
@@ -83,26 +83,32 @@ Rounds 1 and 2 combined. "Core" means the recipe's main promise; "edge" means a 
 
 | # | Job | Core | Edge | Our verdict |
 |---|---|---|---|---|
+| | **Part 1: Working alongside an AI assistant or agent** | | | |
 | 1 | [Turn a request into the right action](#1-turn-a-plain-english-request-into-the-right-action) | 7/7 | 4/7 | Good, if every list has a "not listed" option |
 | 2 | **[Pick the right tool for an AI agent, or none](#2-pick-the-right-tool-for-an-ai-agent-or-none)** | 9/9 | 6/7 | **Strong** |
 | 3 | [Screen what goes into and out of an AI assistant](#3-screen-what-goes-into-and-out-of-an-ai-assistant) | 8/8 | 8/9 | Strong filter, leans cautious |
 | 4 | **[Check that a citation supports the claim](#4-check-that-a-citation-really-supports-the-claim)** | 5/5 | 7/7 | **Strong** |
 | 5 | [Decide which search results an AI may read](#5-decide-which-search-results-an-ai-is-allowed-to-read) | 10/10 | 4/5 | Strong, but cannot tell what is out of date |
 | 6 | [Remember what matters about a customer](#6-remember-what-matters-about-a-customer) | 7/8 | 7/7 | Good, borderline facts sit near the line |
+| | **Part 2: Putting things in the right category** | | | |
 | 7 | [File a record into a deep category tree](#7-file-a-record-into-a-deep-category-tree) | 5/6 | 6/7 | Mixed, confuses what a firm does with who it serves |
 | 8 | **[Classify, falling back to a broader label](#8-classify-and-fall-back-to-a-broader-label-when-unsure)** | 6/6 | 9/9 | **Strong** |
 | 9 | **[Sort a live message stream](#9-sort-a-live-message-stream-show-highlight-hide-or-blur)** | 6/6 | 11/11 | **Strong** |
+| | **Part 3: Pulling facts out of messy text** | | | |
 | 10 | **[Check a cheap extractor, escalate the doubtful](#10-check-a-cheap-extractor-and-escalate-only-the-doubtful-records)** | 6/6 | 6/6 | **Strong** |
 | 11 | [Read a date and let code do the math](#11-read-a-date-from-text-and-let-code-do-the-calendar-math) | 7/7 | 6/8 | Good, with an "other" option and an ambiguity check |
 | 12 | **[Pick the right value from candidates](#12-pick-the-right-value-from-candidates-that-code-found)** | 7/7 | 6/6 | **Strong** |
 | 13 | [Rebuild structure from flattened text](#13-rebuild-headings-lists-and-code-from-flattened-text) | 13/18 | 7/9 | Weakest, a suggestion rather than an answer |
+| | **Part 4: Search and matching** | | | |
 | 14 | [Move the best search result to the top](#14-move-the-most-useful-search-result-to-the-top) | 8/8 | 4/4 | Our test was too easy, public benchmarks positive |
 | 15 | **[Find the exact line that answers a question](#15-find-the-exact-line-in-a-long-document-that-answers-a-question)** | 6/6 | 7/7 | **Strong** |
 | 16 | [Decide whether two records are the same thing](#16-decide-whether-two-records-are-the-same-thing) | 6/7 | 7/8 | Good, sends look-alikes to a person |
 | 17 | **[Tick off a checklist as people talk](#17-tick-off-a-checklist-as-a-conversation-happens)** | 5/5 | 5/5 | **Strong** |
+| | **Part 5: Techniques that make every job better** | | | |
 | 18 | [Ask twice, act only when answers agree](#18-ask-more-than-once-act-only-when-answers-agree) | 5/5 | 7/7 | Very stable, but stable isn't the same as right |
 | 19 | **[Ask many questions in one request](#19-ask-many-questions-in-one-request)** | 2/2 | 1/1 | **Strong, 6.7 times fewer tokens and identical answers** |
 | 20 | [Turn text into numbers for a prediction model](#20-turn-free-text-into-numbers-a-prediction-model-can-use) | 3/3 | 1/1 | Works, modest gains on our data |
+| | **Part 6: Images** | | | |
 | 21 | [Read scanned documents (images)](#21-read-scanned-documents-what-is-it-is-it-signed-where-is-the-total) | 24/24 | 13/13 | Right every time on clean synthetic scans, still a prototype feature |
 | | **All jobs** | **155/163** | **132/144** | |
 
@@ -150,7 +156,7 @@ Rounds 1 and 2 combined. "Core" means the recipe's main promise; "edge" means a 
 
 ***Cookbook: Skill suggestion***
 
-![Twenty tools on a wall, with one highlighted or none](images/job-02.png)
+![From twenty tools, Jev points the agent at the one that fits, or at none](images/job-02.png)
 
 **What it does.** AI agents often have dozens of add-on "skills." Jev looks at the request, shortlists the best three, double-checks them, and suggests one, or none.
 
@@ -398,7 +404,7 @@ Only useful passages get through.
 
 ***Cookbook: Twitch chat filter***
 
-![Chat messages highlighted, paged, hidden or blurred](images/job-09.png)
+![Live chat messages are highlighted, paged, hidden or blurred by rules applied to Jev's judgments](images/job-09.png)
 
 **What it does.** Each message in a live channel gets three quick judgments: what kind of message is it, is it hostile, does it expose something sensitive? Rules in your code then highlight it, hide it, blur it, or page someone.
 
@@ -922,6 +928,16 @@ Jev is hosted only. If your data can't leave the building, the nearest free opti
 
 Here is what we saw when we put local models next to Jev in our earlier study. A free local reranker found the right document less often, and a trained baseline merged and separated records far less accurately than Jev did with no training at all. Neither gave a confidence score you could set a threshold on, so the "act, ask a person, or stop" split that makes Jev useful has to be rebuilt by hand. Local models earn their place when privacy or cost rules them in, not on quality. We haven't tested the three named above.
 
+## What will change
+
+Three things will date this article in the ever-changing AI landscape (and it should).
+
+**Our questions can be improved.** Every prompt in it was written once, tested, and left alone so the results would stay honest. [PROMPTS.md](PROMPTS.md) shows where TypeSafe's wording is tighter than ours, and anyone who runs these jobs on their own data will find better words than we did.
+
+**Jev will improve.** We pinned `jev-1.14.0` so the results can be replayed. There will be a 1.15 and a 2.0, and some of the edge cases we flagged will stop failing. Treat our caveats as a snapshot of one version, not as limits of the approach.
+
+**The division of labour will matter more, not less.** Jev is a System 1 model: fast, cheap and instinctive, answering a fixed question in a third of a second. The large models you already use, Claude, ChatGPT, Gemini and the rest, are System 2: slower, costlier, and able to reason through an open problem. The strongest systems we expect to see use both, with Jev screening, routing, checking and ranking around the large model so the expensive reasoning is spent only where it is needed. Half the cookbooks already work that way, and it is the pattern we would build on.
+
 ## Sources
 
-*Cookbook figures are TypeSafe's, from docs.typesafe.ai, read on October 28, 2026. Most were run on earlier Jev versions (1.12 and 1.13). Public-benchmark figures come from our own earlier study (BEIR NFCorpus, FiQA and SciFact; QASPER; DeepMatcher Abt-Buy, Walmart-Amazon and Amazon-Google). All companies, people and documents in our tests are fictional.*
+*Cookbook figures are TypeSafe's, from docs.typesafe.ai, read on October 28, 2026. Public-benchmark figures come from our own earlier study (BEIR NFCorpus, FiQA and SciFact; QASPER; DeepMatcher Abt-Buy, Walmart-Amazon and Amazon-Google). All companies, people and documents in our tests are fictional.*
