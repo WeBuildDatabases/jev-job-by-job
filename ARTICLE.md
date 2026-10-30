@@ -73,8 +73,6 @@ We work on database problems: enriching records, matching duplicates, and findin
    - One change was made after locking, for publishing safety. Two test messages contained made-up credentials realistic enough to trip code-hosting secret scanners. We swapped them for obviously fake ones and re-ran both; both still passed (details in [LOCKS.md](https://github.com/WeBuildDatabases/jev-job-by-job/blob/main/tests/results/LOCKS.md)).
 6. **We pinned the exact model, `jev-1.14.0`**, and cached every response, so anyone can replay all of it for free from [the published files](https://github.com/WeBuildDatabases/jev-job-by-job).
 
-The side-by-side of our questions with the cookbooks' own wording is in [PROMPTS.md](https://github.com/WeBuildDatabases/jev-job-by-job/blob/main/PROMPTS.md).
-
 **What these results are *not*.** Each job has between 3 and 37 hand-written examples. These are illustrations, not benchmarks, so we say "13 of 15" rather than "87% accurate." Where it matters most (reranking, record matching and "is the answer even here?"), we also cite our earlier tests on public benchmark data with hundreds or thousands of examples.
 
 ## Scoreboard
@@ -932,7 +930,7 @@ Here is what we saw when we put local models next to Jev in our earlier study. A
 
 Three things will date this article in the ever-changing AI landscape (and it should).
 
-**Our questions can be improved.** Every prompt in it was written once, tested, and left alone so the results would stay honest. [PROMPTS.md](PROMPTS.md) shows where TypeSafe's wording is tighter than ours, and anyone who runs these jobs on their own data will find better words than we did.
+**Our questions can be improved.** Every prompt in it was written once, tested, and left alone so the results would stay honest. TypeSafe's own wording is tighter than ours in places, and anyone who runs these jobs on their own data will find better words than we did.
 
 **Jev will improve.** We pinned `jev-1.14.0` so the results can be replayed. There will be a 1.15 and a 2.0, and some of the edge cases we flagged will stop failing. Treat our caveats as a snapshot of one version, not as limits of the approach.
 
