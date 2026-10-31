@@ -88,7 +88,7 @@ with open(out / "alt-text.csv", "w", newline="", encoding="utf-8") as f:
 .jev-article pre code { background: none; padding: 0; font: inherit; }
 .jev-article blockquote.pull { margin: 36px 0; padding: 0 0 0 28px; max-width: 720px; border-left: 3px solid #B9C3D1; background: none; font-size: 26px; line-height: 1.35; font-weight: 500; color: #082241; }
 .jev-article blockquote.pull strong { font-weight: 500; }
-.jev-article details { margin: 18px 0 24px; padding: 12px 18px; border: 1px solid #E3E6EA; border-radius: 4px; background: #fff; }
+.jev-article details { scroll-margin-top: 110px; margin: 18px 0 24px; padding: 12px 18px; border: 1px solid #E3E6EA; border-radius: 4px; background: #fff; }
 .jev-article details[open] { padding-bottom: 6px; }
 .jev-article summary { cursor: pointer; font-size: 15px; color: #6B7280; letter-spacing: .02em; list-style-position: inside; }
 .jev-article summary:hover strong { text-decoration: underline; }

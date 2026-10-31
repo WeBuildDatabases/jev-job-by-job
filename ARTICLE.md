@@ -29,6 +29,10 @@ Jev tells you what it thinks and how confident it is. Your own rules then act au
 
 Every job below shows the exact questions we asked. [View the prompts](#prompts-1), or jump to any job from the scoreboard.
 
+## Want a yes or no, not 10,000 words?
+
+Jev would like that too. The [scoreboard](#scoreboard) shows how it did on every job. The [checklist](#a-checklist-before-you-reach-for-jev) helps you see if it fits your job. The [one-shot prompt](#fit-prompt) lets your coding helper do the checking for you. Read [the one weakness](#the-one-weakness-to-remember) first. It is short, and it is the one that got us.
+
 ## What Jev is *not*
 
 - **Not a chatbot.** It doesn't write replies, summaries or code. When you need words produced, use a writing model, and use Jev to route, check or filter what goes in and comes out.
