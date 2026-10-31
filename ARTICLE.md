@@ -64,14 +64,8 @@ We work on database problems: enriching records, matching duplicates, and findin
 1. **We read the 21 official cookbooks** on docs.typesafe.ai as of October 28, 2026. TypeSafe has since added four more, a shopping-cart recipe and three image recipes; see [What will change](#what-will-change). The two "self-consistency" recipes teach one idea, so we treat them as one job. That gives **20 jobs plus images**.
 2. **We built one test per job, with our own examples.** The cookbooks use trading bots, beer catalogs and Twitch chat. We used CRM syncs, retention policies, company records, Postgres runbooks and invoices. Every company and person is fictional.
 3. **Each test has two kinds of example.** **Core** examples check what the cookbook says Jev does. **Edge** examples deliberately poke at a weakness TypeSafe documents, such as literal reading, math, dates, option order or manipulative text. An edge failure is the documented limit showing up, not a surprise.
-4. **We locked the answers first, three times.**
-   - *Round 1* (192 examples): expected answers were fingerprinted before the first paid call. Combined SHA-256 `c68753b6…16773e78`, at 23:02 UTC on October 28, 2026. Before that lock, an independent reviewer (another AI model, given only the files) attacked our expected answers, and we fixed what it found.
-   - *Round 1 was too easy*: 185 of 192 passed. So we wrote *Round 2*, 115 harder "stress" examples aimed squarely at the weaknesses. It was locked at 23:34 UTC (`dbbb7128…f276df41`).
-   - *Round 3* tested the two obvious fixes for what Round 2 exposed, locked at 23:37 UTC (`a7f69e84…f1949f6f`).
-5. **We kept code's work separate from Jev's.** Some outcomes are decided by ordinary code, such as an exact quote match or a calendar calculation. We label those so Jev doesn't get credit, or blame, for them.
-   - One analysis was run after locking: the menu-exit-only replay in job 1, which used cached answers.
-   - One change was made after locking, for publishing safety. Two test messages contained made-up credentials realistic enough to trip code-hosting secret scanners. We swapped them for obviously fake ones and re-ran both; both still passed (details in [LOCKS.md](https://github.com/WeBuildDatabases/jev-job-by-job/blob/main/tests/results/LOCKS.md)).
-6. **We pinned the exact model, `jev-1.14.0`**, and cached every response, so anyone can replay all of it for free from [the published files](https://github.com/WeBuildDatabases/jev-job-by-job).
+4. **We locked the expected answers before the first paid call**, in three rounds. The hashes, the timestamps and the two exceptions are in the [Method note](#method) at the end.
+5. **We kept code's work separate from Jev's**, pinned the exact model, `jev-1.14.0`, and cached every response, so anyone can replay all of it for free from [the published files](https://github.com/WeBuildDatabases/jev-job-by-job).
 
 **What these results are *not*.** Each job has between 3 and 37 hand-written examples. These are illustrations, not benchmarks, so we say "13 of 15" rather than "87% accurate." Where it matters most (reranking, record matching and "is the answer even here?"), we also cite our earlier tests on public benchmark data with hundreds or thousands of examples.
 
@@ -79,40 +73,43 @@ We work on database problems: enriching records, matching duplicates, and findin
 
 Rounds 1 and 2 combined. "Core" means the recipe's main promise; "edge" means a documented weakness, pushed on purpose.
 
+If you work with data, start with Parts 4 and 5, then Part 3. Parts 1 and 2 matter once an AI assistant is in the loop.
+
 | # | Job | Core | Edge | Our verdict |
 |---|---|---|---|---|
-| | **Part 1: Working alongside an AI assistant or agent** | | | |
+| | **Part 1: Working alongside an AI agent** | | | |
 | 1 | [Turn a request into the right action](#1-turn-a-plain-english-request-into-the-right-action) | 7/7 | 4/7 | Good, if every list has a "not listed" option |
 | 2 | **[Pick the right tool for an AI agent, or none](#2-pick-the-right-tool-for-an-ai-agent-or-none)** | 9/9 | 6/7 | **Strong** |
 | 3 | [Screen what goes into and out of an AI assistant](#3-screen-what-goes-into-and-out-of-an-ai-assistant) | 8/8 | 8/9 | Strong filter, leans cautious |
+| | **Part 2: Grounding an AI assistant** | | | |
 | 4 | **[Check that a citation supports the claim](#4-check-that-a-citation-really-supports-the-claim)** | 5/5 | 7/7 | **Strong** |
 | 5 | [Decide which search results an AI may read](#5-decide-which-search-results-an-ai-is-allowed-to-read) | 10/10 | 4/5 | Strong, but cannot tell what is out of date |
 | 6 | [Remember what matters about a customer](#6-remember-what-matters-about-a-customer) | 7/8 | 7/7 | Good, borderline facts sit near the line |
-| | **Part 2: Putting things in the right category** | | | |
+| | **Part 3: Putting things in the right category** | | | |
 | 7 | [File a record into a deep category tree](#7-file-a-record-into-a-deep-category-tree) | 5/6 | 6/7 | Mixed, confuses what a firm does with who it serves |
 | 8 | **[Classify, falling back to a broader label](#8-classify-and-fall-back-to-a-broader-label-when-unsure)** | 6/6 | 9/9 | **Strong** |
 | 9 | **[Sort a live message stream](#9-sort-a-live-message-stream-show-highlight-hide-or-blur)** | 6/6 | 11/11 | **Strong** |
-| | **Part 3: Pulling facts out of messy text** | | | |
+| | **Part 4: Pulling facts out of messy text** | | | |
 | 10 | **[Check a cheap extractor, escalate the doubtful](#10-check-a-cheap-extractor-and-escalate-only-the-doubtful-records)** | 6/6 | 6/6 | **Strong** |
 | 11 | [Read a date and let code do the math](#11-read-a-date-from-text-and-let-code-do-the-calendar-math) | 7/7 | 6/8 | Good, with an "other" option and an ambiguity check |
 | 12 | **[Pick the right value from candidates](#12-pick-the-right-value-from-candidates-that-code-found)** | 7/7 | 6/6 | **Strong** |
 | 13 | [Rebuild structure from flattened text](#13-rebuild-headings-lists-and-code-from-flattened-text) | 13/18 | 7/9 | Weakest, a suggestion rather than an answer |
-| | **Part 4: Search and matching** | | | |
+| | **Part 5: Finding, matching and keeping track** | | | |
 | 14 | [Move the best search result to the top](#14-move-the-most-useful-search-result-to-the-top) | 8/8 | 4/4 | Our test was too easy, public benchmarks positive |
 | 15 | **[Find the exact line that answers a question](#15-find-the-exact-line-in-a-long-document-that-answers-a-question)** | 6/6 | 7/7 | **Strong** |
 | 16 | [Decide whether two records are the same thing](#16-decide-whether-two-records-are-the-same-thing) | 6/7 | 7/8 | Good, sends look-alikes to a person |
 | 17 | **[Tick off a checklist as people talk](#17-tick-off-a-checklist-as-a-conversation-happens)** | 5/5 | 5/5 | **Strong** |
-| | **Part 5: Techniques that make every job better** | | | |
+| | **Part 6: Getting more from every request** | | | |
 | 18 | [Ask twice, act only when answers agree](#18-ask-more-than-once-act-only-when-answers-agree) | 5/5 | 7/7 | Very stable, but stable isn't the same as right |
 | 19 | **[Ask many questions in one request](#19-ask-many-questions-in-one-request)** | 2/2 | 1/1 | **Strong, 6.7 times fewer tokens and identical answers** |
 | 20 | [Turn text into numbers for a prediction model](#20-turn-free-text-into-numbers-a-prediction-model-can-use) | 3/3 | 1/1 | Works, modest gains on our data |
-| | **Part 6: Images** | | | |
+| | **Part 7: Reading images** | | | |
 | 21 | [Read scanned documents (images)](#21-read-scanned-documents-what-is-it-is-it-signed-where-is-the-total) | 24/24 | 13/13 | Right every time on clean synthetic scans, still a prototype feature |
 | | **All jobs** | **155/163** | **132/144** | |
 
 ---
 
-# Part 1: Working alongside an AI assistant or agent
+# Part 1: Working alongside an AI agent
 
 ## 1. Turn a plain-English request into the right action
 
@@ -219,6 +216,10 @@ Rounds 1 and 2 combined. "Core" means the recipe's main promise; "edge" means a 
 **What it doesn't do.** It doesn't make your assistant secure. It is one layer, and your database permissions are still the real wall. Set thresholds from your own traffic, not from ours.
 
 **Reach for it when** anything typed by users, or retrieved from documents, reaches an AI that can act.
+
+---
+
+# Part 2: Grounding an AI assistant
 
 ## 4. Check that a citation really supports the claim
 
@@ -333,7 +334,7 @@ Only useful passages get through.
 
 ---
 
-# Part 2: Putting things in the right category
+# Part 3: Putting things in the right category
 
 ## 7. File a record into a deep category tree
 
@@ -439,7 +440,7 @@ Only useful passages get through.
 
 ---
 
-# Part 3: Pulling facts out of messy text
+# Part 4: Pulling facts out of messy text
 
 ## 10. Check a cheap extractor and escalate only the doubtful records
 
@@ -598,7 +599,7 @@ We also included correct but tricky values: "celebrated its 10th anniversary in 
 
 ---
 
-# Part 4: Search and matching
+# Part 5: Finding, matching and keeping track
 
 ## 14. Move the most useful search result to the top
 
@@ -742,7 +743,7 @@ We also included correct but tricky values: "celebrated its 10th anniversary in 
 
 ---
 
-# Part 5: Techniques that make every job better
+# Part 6: Getting more from every request
 
 ## 18. Ask more than once, act only when answers agree
 
@@ -838,7 +839,7 @@ We also included correct but tricky values: "celebrated its 10th anniversary in 
 
 ---
 
-# Part 6: Images
+# Part 7: Reading images
 
 ## 21. Read scanned documents: what is it, is it signed, where is the total?
 
@@ -962,6 +963,15 @@ Four things will date this article in the ever-changing AI landscape (and it sho
 **Jev will improve.** We pinned `jev-1.14.0` so the results can be replayed. There will be a 1.15 and a 2.0, and some of the edge cases we flagged will stop failing. Treat our caveats as a snapshot of one version, not as limits of the approach.
 
 **The division of labour will matter more, not less.** Jev is a System 1 model: fast, cheap and instinctive, answering a fixed question in a third of a second. The large models you already use, Claude, ChatGPT, Gemini and the rest, are System 2: slower, costlier, and able to reason through an open problem. The strongest systems we expect to see use both, with Jev screening, routing, checking and ranking around the large model so the expensive reasoning is spent only where it is needed. Half the cookbooks already work that way, and it is the pattern we would build on.
+
+## Method
+
+- *Round 1* (192 examples): expected answers were fingerprinted before the first paid call. Combined SHA-256 `c68753b6…16773e78`, at 23:02 UTC on October 28, 2026. Before that lock, an independent reviewer (another AI model, given only the files) attacked our expected answers, and we fixed what it found.
+- *Round 1 was too easy*: 185 of 192 passed. So we wrote *Round 2*, 115 harder "stress" examples aimed squarely at the weaknesses. It was locked at 23:34 UTC (`dbbb7128…f276df41`).
+- *Round 3* tested the two obvious fixes for what Round 2 exposed, locked at 23:37 UTC (`a7f69e84…f1949f6f`).
+- Some outcomes are decided by ordinary code, such as an exact quote match or a calendar calculation. We label those so Jev doesn't get credit, or blame, for them.
+- One analysis was run after locking: the menu-exit-only replay in job 1, which used cached answers.
+- One change was made after locking, for publishing safety. Two test messages contained made-up credentials realistic enough to trip code-hosting secret scanners. We swapped them for obviously fake ones and re-ran both; both still passed (details in [LOCKS.md](https://github.com/WeBuildDatabases/jev-job-by-job/blob/main/tests/results/LOCKS.md)).
 
 ## Sources
 
