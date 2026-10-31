@@ -8,7 +8,7 @@
 
 ![Material goes in, Jev answers in one of four fixed shapes (yes or no, which one, how much, where), and your rules then act, ask a person, or do not act](images/job-00.png)
 
-Most AI you have met **writes**: it drafts emails, answers questions and summarizes meetings. Jev, made by TypeSafe, does something narrower and, for a lot of business software, more useful: it **decides**.
+Most AI you have met **writes**: it drafts emails, answers questions and summarizes meetings. Jev made by TypeSafe, does something simpler and for a lot of business software, more useful: it **decides**.
 
 You hand Jev some material, such as a support ticket, a contract clause, a customer record or a scanned invoice. You also ask a question whose possible answers you have fixed in advance:
 
