@@ -55,8 +55,6 @@ This is not a bug. It is how the tool works: you give it a list of options, and 
 - In the data-tool assistant, adding "not on the list" to every setting list stopped the leads/xlsx and 15-minute requests. In a replay of the same 14 requests, 13 were handled correctly, against 11 of 14 with no fix. This replay was run after the locked round, so treat it as indicative. The one miss was "only EU contacts," because a filter is not an option at all.
 - For dates, an "other" option fixed "end of next month."
 
-We did not retest the Redshift case.
-
 ## How we tested
 
 We work on database problems: enriching records, matching duplicates, and finding answers in piles of documents. We wanted to know which official recipes help with that kind of work and where each one breaks.
