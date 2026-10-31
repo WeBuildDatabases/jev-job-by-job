@@ -102,7 +102,7 @@ meta = {
     "title": title,
     "slug": "jev-job-by-job",
     "excerpt": excerpt,
-    "meta_description": "We tested all 21 TypeSafe cookbooks for Jev, the model that decides instead of writes. What it does well, where it breaks, and when to reach for it.",
+    "meta_description": "We tested 21 TypeSafe cookbooks for Jev, the model that decides instead of writes. What it does well, where it breaks, and when to reach for it.",
     "featured_image": "images/header-1200x630.png",
     "social_share_image": "images/share-card-1200x630.png",
     "author": "Dan",

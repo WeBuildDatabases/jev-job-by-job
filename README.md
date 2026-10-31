@@ -1,6 +1,6 @@
 # Jev, job by job
 
-A plain-English field guide to TypeSafe's **Jev** model. It covers the 20 jobs taught by the 21 official cookbooks, plus images, and tests each job with our own examples.
+A plain-English field guide to TypeSafe's **Jev** model. It covers the 20 jobs taught by the 21 official cookbooks published as of October 28, 2026, plus images, and tests each job with our own examples.
 
 - **Read the article:** [ARTICLE.md](ARTICLE.md)
 - **Figures (one per job, plus two explainers):** [images/](images/). How they support the article, and their briefs: [IMAGE-BRIEFS.md](IMAGE-BRIEFS.md). Redraw them with `python images/figures.py` (needs Windows with Microsoft Edge).

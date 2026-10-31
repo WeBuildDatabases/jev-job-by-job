@@ -1,6 +1,6 @@
 # Jev, job by job: what it does, what it doesn't, and when to reach for it
 
-*We tested all 21 official TypeSafe cookbooks, 20 jobs plus images: 307 examples, 27 follow-up checks, 3.3 cents, every answer locked before Jev saw one.* ***Bottom line: used correctly, Jev is faster, cheaper, and makes work possible that was too slow or too expensive to try before. Used loosely, it picks the wrong answer with confidence.***
+*We tested the 21 official TypeSafe cookbooks published as of October 28, 2026, 20 jobs plus images: 307 examples, 27 follow-up checks, 3.3 cents, expected answers locked before the runs (two exceptions, listed below).* ***Bottom line: used correctly, Jev is faster, cheaper, and makes work possible that was too slow or too expensive to try before. Used loosely, it picks the wrong answer with confidence.***
 
 ---
 
@@ -61,7 +61,7 @@ We did not retest the Redshift case.
 
 We work on database problems: enriching records, matching duplicates, and finding answers in piles of documents. We wanted to know which official recipes help with that kind of work and where each one breaks.
 
-1. **We read all 21 official cookbooks** on docs.typesafe.ai, as of October 28, 2026. The two "self-consistency" recipes teach one idea, so we treat them as one job. That gives **20 jobs plus images**.
+1. **We read the 21 official cookbooks** on docs.typesafe.ai as of October 28, 2026. TypeSafe has since added four more, a shopping-cart recipe and three image recipes; see [What will change](#what-will-change). The two "self-consistency" recipes teach one idea, so we treat them as one job. That gives **20 jobs plus images**.
 2. **We built one test per job, with our own examples.** The cookbooks use trading bots, beer catalogs and Twitch chat. We used CRM syncs, retention policies, company records, Postgres runbooks and invoices. Every company and person is fictional.
 3. **Each test has two kinds of example.** **Core** examples check what the cookbook says Jev does. **Edge** examples deliberately poke at a weakness TypeSafe documents, such as literal reading, math, dates, option order or manipulative text. An edge failure is the documented limit showing up, not a surprise.
 4. **We locked the answers first, three times.**
@@ -304,7 +304,7 @@ Only useful passages get through.
 
 **What it does.** After each conversation, Jev decides whether the customer said something lasting, such as "we use Salesforce" or "our data must stay in the EU," that should shape future help. Those facts are saved and fed into later requests.
 
-**What TypeSafe showed.** Six hand-written support tickets. With memory, 6 of 6 later tickets reached the right team; without it, 2 of 6.
+**What TypeSafe showed.** Five support tickets, three of them saved as lasting facts, then six later messages. With memory, 6 of 6 reached the right team; without it, 3 of 6.
 
 **What we tried.** A data-enrichment vendor's support desk, with:
 
@@ -406,7 +406,7 @@ Only useful passages get through.
 
 **What it does.** Each message in a live channel gets three quick judgments: what kind of message is it, is it hostile, does it expose something sensitive? Rules in your code then highlight it, hide it, blur it, or page someone.
 
-**What TypeSafe showed.** Twenty-nine invented messages from a gaming stream, at about 0.4 seconds each. Changing the rules re-sorted 14 messages without asking Jev anything new.
+**What TypeSafe showed.** Twenty-nine invented messages from a gaming stream, at a median of about 0.1 seconds each. Changing the rules re-sorted 14 messages without asking Jev anything new.
 
 **What we tried.** A company "#db-help" channel, with:
 
@@ -455,7 +455,7 @@ Only useful passages get through.
 
 Only flagged records go to an expensive model.
 
-**What TypeSafe showed.** One staged example, plus a chart of 100 internal runs with no numbers in the text. The demo's failure was hard-coded because the cheap model's output varied too much to reproduce.
+**What TypeSafe showed.** One staged example, plus a chart of 100 internal runs with no accuracy numbers in the text. The demo's failure was hard-coded because the cheap model's output varied too much to reproduce.
 
 **What we tried.** Twelve company "About us" pages with extractions we had planted mistakes in:
 
@@ -713,7 +713,7 @@ We also included correct but tricky values: "celebrated its 10th anniversary in 
 
 **What it does.** As a transcript grows, Jev scores how fully each checklist point has been covered. Your code ticks the point once it passes a bar, and it stays ticked.
 
-**What TypeSafe showed.** A presenter's five talking points ticked off over six transcript chunks.
+**What TypeSafe showed.** A presenter's three talking points, five criteria between them, ticked off over six transcript chunks.
 
 **What we tried.** Two sales discovery calls, with a checklist of current database, data size, decision-maker, compliance needs and budget. We built in traps:
 
@@ -752,7 +752,7 @@ We also included correct but tricky values: "celebrated its 10th anniversary in 
 
 **What it does.** Ask the same question several times, with an irrelevant detail changed each time. If the answers agree and are clear, act; if they wobble or are unclear, ask a person.
 
-**What TypeSafe showed.** Jev's answers wobbled very little between repeats, about 0.01 on a 0-to-1 scale. Its 0.60 "not sure" rule made 74% of decisions automatic, with 99.2% agreement among them. The page is candid that this shows consistency, not accuracy.
+**What TypeSafe showed.** Jev's answers wobbled very little between repeats, about 0.01 on a 0-to-1 scale. Its 0.60 "not sure" rule made 74% of decisions automatic, with 99.2% agreement across repeats once "not sure" counts as an answer. The page is candid that this shows consistency, not accuracy.
 
 **What we tried.** Twelve support tickets, each asked eight times. Half the repeats reversed the order of the options, which TypeSafe documents as something that can sway an answer.
 
@@ -842,7 +842,7 @@ We also included correct but tricky values: "celebrated its 10th anniversary in 
 
 ## 21. Read scanned documents: what is it, is it signed, where is the total?
 
-*Not a cookbook: TypeSafe's image and "Box" features, which it calls "dreamer-ready," meaning not yet production-ready.*
+*TypeSafe added three image cookbooks after our tests: a scanned vaccination record, OCR confidence with boxes, and a feeder-cam log. Our test predates them. TypeSafe still calls its image and "Box" features "dreamer-ready," meaning not yet production-ready.*
 
 ![A scanned invoice with boxes around the total and the signature](images/job-21.png)
 
@@ -949,13 +949,15 @@ Assessment only: no edits, no installations, no paid calls, no sending private d
 
 Jev is hosted only. If your data can't leave the building, the nearest free options are zero-shot classifiers such as [MoritzLaurer's DeBERTa-v3 models](https://huggingface.co/collections/MoritzLaurer/zeroshot-classifiers) or [Knowledgator's GLiClass](https://huggingface.co/knowledgator) for "which label?" questions, and a small instruct model run through Ollama for yes/no questions.
 
-Here is what we saw when we put local models next to Jev in our earlier study. A free local reranker found the right document less often, and a trained baseline merged and separated records far less accurately than Jev did with no training at all. Neither gave a confidence score you could set a threshold on, so the "act, ask a person, or stop" split that makes Jev useful has to be rebuilt by hand. Local models earn their place when privacy or cost rules them in, not on quality. We haven't tested the three named above.
+Here is what we saw when we put local models next to Jev in our earlier study. A free local reranker found the right document less often, and a trained baseline merged and separated records far less accurately than Jev did with no training at all. Both return a score you can threshold, but the score is only as meaningful as the labelled data you tune it on, so the "act, ask a person, or stop" split still has to be built and checked by hand for each dataset. Local models earn their place when privacy or cost rules them in, not on quality. We haven't tested the three named above; the two zero-shot classifiers also return a per-label score.
 
 ## What will change
 
-Three things will date this article in the ever-changing AI landscape (and it should).
+Four things will date this article in the ever-changing AI landscape (and it should).
 
 **Our questions can be improved.** Every prompt in it was written once, tested, and left alone so the results would stay honest. TypeSafe's own wording is tighter than ours in places, and anyone who runs these jobs on their own data will find better words than we did.
+
+**The cookbook list will grow.** TypeSafe added four cookbooks, a shopping cart and three for images, between our read on October 28 and this article going out, and re-ran two of the existing pages on a newer model the next day. The cookbook figures here match the live pages as of October 30, 2026.
 
 **Jev will improve.** We pinned `jev-1.14.0` so the results can be replayed. There will be a 1.15 and a 2.0, and some of the edge cases we flagged will stop failing. Treat our caveats as a snapshot of one version, not as limits of the approach.
 
@@ -963,4 +965,4 @@ Three things will date this article in the ever-changing AI landscape (and it sh
 
 ## Sources
 
-*Cookbook figures are TypeSafe's, from docs.typesafe.ai, read on October 28, 2026. Public-benchmark figures come from our own earlier study (BEIR NFCorpus, FiQA and SciFact; QASPER; DeepMatcher Abt-Buy, Walmart-Amazon and Amazon-Google). All companies, people and documents in our tests are fictional.*
+*Cookbook figures are TypeSafe's, from docs.typesafe.ai, read on October 28 and re-checked on October 30, 2026. Public-benchmark figures come from our own earlier study (BEIR NFCorpus, FiQA and SciFact; QASPER; DeepMatcher Abt-Buy, Walmart-Amazon and Amazon-Google). All companies, people and documents in our tests are fictional.*
