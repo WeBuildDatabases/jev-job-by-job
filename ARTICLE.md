@@ -29,10 +29,6 @@ Jev tells you what it thinks and how confident it is. Your own rules then act au
 
 Every job below shows the exact questions we asked. [View the prompts](#prompts-1), or jump to any job from the scoreboard.
 
-## Want a yes or no, not 10,000 words?
-
-Jev would like that too. The [scoreboard](#scoreboard) shows how it did on every job. The [checklist](#a-checklist-before-you-reach-for-jev) helps you see if it fits your job. The [one-shot prompt](#fit-prompt) lets your coding helper do the checking for you. Read [the one weakness](#the-one-weakness-to-remember) first. It is short, and it is the one that got us.
-
 ## What Jev is *not*
 
 - **Not a chatbot.** It doesn't write replies, summaries or code. When you need words produced, use a writing model, and use Jev to route, check or filter what goes in and comes out.
@@ -58,6 +54,14 @@ This is not a bug. It is how the tool works: you give it a list of options, and 
 
 - In the data-tool assistant, adding "not on the list" to every setting list stopped the leads/xlsx and 15-minute requests. In a replay of the same 14 requests, 13 were handled correctly, against 11 of 14 with no fix. This replay was run after the locked round, so treat it as indicative. The one miss was "only EU contacts," because a filter is not an option at all.
 - For dates, an "other" option fixed "end of next month."
+
+## Don't want to read 10,000 words? We get it.
+
+Try it yourself, on your own project or research. Jev would like that too.
+
+- The [scoreboard](#scoreboard) shows how Jev did on every job.
+- The [checklist](#a-checklist-before-you-reach-for-jev) helps you see if it fits your job.
+- The [one-shot prompt](#fit-prompt) lets your LLM (ChatGPT, Claude, Gemini) do the checking on your own creation.
 
 ## How we tested
 
