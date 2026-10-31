@@ -1,8 +1,12 @@
+<img src="images/share-card.png" alt="Jev, job by job: 21 TypeSafe cookbooks tested. A worker at a conveyor sorting boxes into green, gold and purple chutes." width="1200">
+
 # Jev, job by job
+
+**Read the article:** [webuilddatabases.com/blog/jev-job-by-job](https://webuilddatabases.com/blog/jev-job-by-job/)
 
 A plain-English field guide to TypeSafe's **Jev** model. It covers the 20 jobs taught by the 21 official cookbooks published as of October 28, 2026, plus images, and tests each job with our own examples.
 
-- **Read the article:** [ARTICLE.md](ARTICLE.md)
+- **Article source:** [ARTICLE.md](ARTICLE.md)
 - **Figures (one per job, plus two explainers):** [images/](images/). How they support the article, and their briefs: [IMAGE-BRIEFS.md](IMAGE-BRIEFS.md). Redraw them with `python images/figures.py` (needs Windows with Microsoft Edge).
 - **Short video (34 s):** [video/jev-video.mp4](video/jev-video.mp4) (narrated) and [video/jev-video-silent.mp4](video/jev-video-silent.mp4) (captions only); script, voice and pacing notes in [VIDEO-SCRIPT.md](VIDEO-SCRIPT.md)
 - **What each official cookbook claims:** [research/COOKBOOK-NOTES.md](research/COOKBOOK-NOTES.md)
@@ -52,3 +56,7 @@ Each command replays its round from `tests/results/cache.jsonl`. Any changed or 
 ## License and attribution
 
 Cookbook summaries describe TypeSafe's public documentation at docs.typesafe.ai, read on October 28, 2026. Figures quoted from it are TypeSafe's. All companies, people and documents in our tests are invented.
+
+## Licence
+
+Code is MIT ([LICENSE](LICENSE)). The article, figures and video are CC BY 4.0 ([LICENSE-CONTENT](LICENSE-CONTENT)): reuse them with credit to We Build Databases and a link to the article.
