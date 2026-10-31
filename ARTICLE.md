@@ -920,6 +920,31 @@ For a company that works with data, the strongest fits in our tests were:
 
 All of them are judgments people already make by hand thousands of times a day, which is the work Jev is built for.
 
+## Try this to see if Jev is a good fit
+
+Two ways to find out with your own material, both free of charge.
+
+**Ten minutes, no code.** Open TypeSafe's [Playground](https://console.typesafe.ai/playground) (it needs a free account), paste one real record, ticket or paragraph as the state, and ask the three shapes from the checklist: a yes/no question, a which-one question with "none of these" as an option, and a how-much question. Then try a case where the right answer is not on your list. If a colleague could answer each question in a second from that text, and Jev's answers match theirs, you have a fit. If Jev picks confidently when the answer is not on the list, you have met [the one weakness to remember](#the-one-weakness-to-remember) and need an exit option. TypeSafe's own short version of this test is four lines: route a request to one of a fixed set of destinations, score something on a rubric, check whether a statement is true of a document, or replace a prompt that asks an LLM to "return JSON" ([Jev with coding agents](https://docs.typesafe.ai/introduction/coding-agents)).
+
+**Your real project, with your coding assistant.** Paste the prompt below into Claude Code, Codex, Cursor or whichever assistant can read your project. It inspects your code and TypeSafe's current documentation and comes back with one of three answers: ordinary code, one Jev approach, or no change. It makes no edits and no paid calls.
+
+<details id="fit-prompt">
+<summary><strong>The prompt to paste</strong> (select all, copy)</summary>
+
+<pre>Help me decide whether Jev (TypeSafe's System One model) would improve this task: [describe the problem, or use this conversation].
+
+Read TypeSafe's current documentation first, starting at https://docs.typesafe.ai/llms.txt and the use-case map at https://docs.typesafe.ai/concepts/use-case-map. If the TypeSafe agent skill is installed, use it; otherwise read https://docs.typesafe.ai/agent-skill and its linked skill directly. Cite the pages you actually read. As optional secondary evidence, the tests at https://github.com/WeBuildDatabases/jev-job-by-job show what Jev did on 21 jobs; they are not a limit on what it can do.
+
+Inspect the relevant project behavior, code and known failures. For a new project, start from the intended user journey. Ask first whether ordinary code, clearer inputs or a simpler interface already solves the problem.
+
+For a promising use, name the input, one clear judgment with a fixed set of answers, and the code or person that acts on it. Could a person answer that question in a second from the supplied material? Include "none of these" and "not enough information" among the answers where they could apply, and keep the judgment separate from the action.
+
+Return a short recommendation: the concrete problem and the evidence; ordinary code, one Jev approach with the official page it follows, or no change; the expected benefit and the main limitation; one next step. Before any build, propose success criteria, the mistakes we cannot accept, the data we are allowed to send, a cost limit and a fallback, and wait for agreement.
+
+Assessment only: no edits, no installations, no paid calls, no sending private data. Never read credentials. "Don't use Jev" is a valid outcome.</pre>
+
+</details>
+
 ## If you need a local model
 
 Jev is hosted only. If your data can't leave the building, the nearest free options are zero-shot classifiers such as [MoritzLaurer's DeBERTa-v3 models](https://huggingface.co/collections/MoritzLaurer/zeroshot-classifiers) or [Knowledgator's GLiClass](https://huggingface.co/knowledgator) for "which label?" questions, and a small instruct model run through Ollama for yes/no questions.

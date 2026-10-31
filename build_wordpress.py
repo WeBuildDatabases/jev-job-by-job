@@ -19,6 +19,9 @@ body = body.replace(' markdown="1"', "")
 body = re.sub(r'<h1 id="([^"]+)">(.+?)</h1>', r'<h2 class="part" id="\1">\2</h2>', body)
 # external links open in a new tab; in-page (#) links do not
 body = re.sub(r'<a href="(https?://[^"]+)"', r'<a href="\1" target="_blank" rel="noopener"', body)
+# each job section ends with a link back to the scoreboard
+body = "".join(c.rstrip("\n") + '\n<p class="back"><a href="#scoreboard">&uarr; Back to the scoreboard</a></p>\n'
+               if re.match(r'<h2 id="\d+-', c) else c for c in re.split(r'(?=<h2 )', body))
 # scoreboard: part rows span the table, the total row is marked, numeric cells are tagged
 body = body.replace("<table>", '<table class="scoreboard">', 1)
 body = re.sub(r'<tr>\n<td></td>\n<td>(<strong>Part \d+:.*?</strong>)</td>\n<td></td>\n<td></td>\n<td></td>\n</tr>',
@@ -78,6 +81,11 @@ with open(out / "alt-text.csv", "w", newline="", encoding="utf-8") as f:
 .jev-article table.scoreboard tr.part td { padding: 22px 0 6px; border-bottom: 1px solid #082241; }
 .jev-article table.scoreboard tr.part strong { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #704184; }
 .jev-article table.scoreboard tr.total td { border-bottom: 0; border-top: 2px solid #082241; padding-top: 12px; }
+.jev-article p.back { margin: 6px 0 0; font-size: 14px; }
+.jev-article p.back a { display: inline-block; padding: 6px 12px; border: 1px solid #B9C3D1; border-radius: 4px; background: #F7F8FA; color: #244C79; text-decoration: none; }
+.jev-article p.back a:hover { border-color: #082241; color: #082241; }
+.jev-article details pre { white-space: pre-wrap; overflow-wrap: anywhere; font: 14px/1.55 "IBM Plex Mono", Consolas, monospace; color: #2B2F36; background: #F1F3F5; padding: 14px 16px; border-radius: 4px; margin: 12px 0 8px; }
+.jev-article pre code { background: none; padding: 0; font: inherit; }
 .jev-article blockquote.pull { margin: 36px 0; padding: 0 0 0 28px; max-width: 720px; border-left: 3px solid #B9C3D1; background: none; font-size: 26px; line-height: 1.35; font-weight: 500; color: #082241; }
 .jev-article blockquote.pull strong { font-weight: 500; }
 .jev-article details { margin: 18px 0 24px; padding: 12px 18px; border: 1px solid #E3E6EA; border-radius: 4px; background: #fff; }
