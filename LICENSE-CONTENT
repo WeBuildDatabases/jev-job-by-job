@@ -8,7 +8,8 @@ https://webuilddatabases.com/blog/jev-job-by-job/
 
 Full licence text: https://creativecommons.org/licenses/by/4.0/legalcode
 
-The code in this repository is under the MIT licence; see LICENSE.
+The code in this repository (test scripts, builders and figure generators) is
+under the MIT licence; see LICENSE.
 TypeSafe's cookbook pages in research/typesafe-pages/ are TypeSafe's own
 material, kept here as a dated snapshot for comparison, and are not covered
 by either licence.
