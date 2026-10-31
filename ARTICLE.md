@@ -929,7 +929,14 @@ All of them are judgments people already make by hand thousands of times a day, 
 
 Two ways to find out with your own material, both free of charge.
 
-**Ten minutes, no code.** Open TypeSafe's [Playground](https://console.typesafe.ai/playground) (it needs a free account), paste one real record, ticket or paragraph as the state, and ask the three shapes from the checklist: a yes/no question, a which-one question with "none of these" as an option, and a how-much question. Then try a case where the right answer is not on your list. If a colleague could answer each question in a second from that text, and Jev's answers match theirs, you have a fit. If Jev picks confidently when the answer is not on the list, you have met [the one weakness to remember](#the-one-weakness-to-remember) and need an exit option. TypeSafe's own short version of this test is four lines: route a request to one of a fixed set of destinations, score something on a rubric, check whether a statement is true of a document, or replace a prompt that asks an LLM to "return JSON" ([Jev with coding agents](https://docs.typesafe.ai/introduction/coding-agents)).
+**Ten minutes, no code.** Open TypeSafe's [Playground](https://console.typesafe.ai/playground) (it needs a free account) and paste one real record, ticket or paragraph as the state. Then:
+
+1. Ask the three shapes from the checklist: a yes/no question, a which-one question with "none of these" as an option, and a how-much question.
+2. Try a case where the right answer is not on your list.
+3. Compare with a colleague. If they could answer each question in a second from that text, and Jev's answers match theirs, you have a fit.
+4. Watch the off-list case. If Jev picks confidently when the answer is not on the list, you have met [the one weakness to remember](#the-one-weakness-to-remember) and need an exit option.
+
+TypeSafe's own short version of this test is four lines: route a request to one of a fixed set of destinations, score something on a rubric, check whether a statement is true of a document, or replace a prompt that asks an LLM to "return JSON" ([Jev with coding agents](https://docs.typesafe.ai/introduction/coding-agents)).
 
 **Your real project, with your coding assistant.** Paste the prompt below into Claude Code, Codex, Cursor or whichever assistant can read your project. It inspects your code and TypeSafe's current documentation and comes back with one of three answers: ordinary code, one Jev approach, or no change. It makes no edits and no paid calls.
 
@@ -952,7 +959,7 @@ Assessment only: no edits, no installations, no paid calls, no sending private d
 
 ## If you need a local model
 
-Jev is hosted only. If your data can't leave the building, the nearest free options are zero-shot classifiers such as [MoritzLaurer's DeBERTa-v3 models](https://huggingface.co/collections/MoritzLaurer/zeroshot-classifiers) or [Knowledgator's GLiClass](https://huggingface.co/knowledgator) for "which label?" questions, and a small instruct model run through Ollama for yes/no questions.
+Jev is hosted only. If [your data can't leave the building](https://webuilddatabases.com/blog/cloud-vs-on-premise-database-for-ai/), the nearest free options are zero-shot classifiers such as [MoritzLaurer's DeBERTa-v3 models](https://huggingface.co/collections/MoritzLaurer/zeroshot-classifiers) or [Knowledgator's GLiClass](https://huggingface.co/knowledgator) for "which label?" questions, and a small instruct model run through Ollama for yes/no questions.
 
 Here is what we saw when we put local models next to Jev in our earlier study. A free local reranker found the right document less often, and a trained baseline merged and separated records far less accurately than Jev did with no training at all. Both return a score you can threshold, but the score is only as meaningful as the labelled data you tune it on, so the "act, ask a person, or stop" split still has to be built and checked by hand for each dataset. Local models earn their place when privacy or cost rules them in, not on quality. We haven't tested the three named above; the two zero-shot classifiers also return a per-label score.
 
@@ -967,6 +974,10 @@ Four things will date this article in the ever-changing AI landscape (and it sho
 **Jev will improve.** We pinned `jev-1.14.0` so the results can be replayed. There will be a 1.15 and a 2.0, and some of the edge cases we flagged will stop failing. Treat our caveats as a snapshot of one version, not as limits of the approach.
 
 **The division of labour will matter more, not less.** Jev is a System 1 model: fast, cheap and instinctive, answering a fixed question in a third of a second. The large models you already use, Claude, ChatGPT, Gemini and the rest, are System 2: slower, costlier, and able to reason through an open problem. The strongest systems we expect to see use both, with Jev screening, routing, checking and ranking around the large model so the expensive reasoning is spent only where it is needed. Half the cookbooks already work that way, and it is the pattern we would build on.
+
+## Working on something like this?
+
+Most of the jobs above came from our own work: enriching records, matching duplicates and pulling facts out of documents. If you have one of those problems and want to know whether Jev, a local model or plain code is the right tool, [talk to us](https://webuilddatabases.com/custom-database-contact-us/). It is the everyday work behind our [AI Data Preparation](https://webuilddatabases.com/service/ai-data-preparation/) and [AI Automations & Assistants](https://webuilddatabases.com/service/ai-automation-assistants/) services.
 
 ## Method
 

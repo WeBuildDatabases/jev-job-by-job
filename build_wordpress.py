@@ -18,7 +18,7 @@ body = body.replace(' markdown="1"', "")
 # part headings are h1 in the markdown; the post title is the page's h1, so they become h2.part
 body = re.sub(r'<h1 id="([^"]+)">(.+?)</h1>', r'<h2 class="part" id="\1">\2</h2>', body)
 # external links open in a new tab; in-page (#) links do not
-body = re.sub(r'<a href="(https?://[^"]+)"', r'<a href="\1" target="_blank" rel="noopener"', body)
+body = re.sub(r'<a href="(https?://(?!webuilddatabases\.com)[^"]+)"', r'<a href="\1" target="_blank" rel="noopener"', body)  # site links stay in the same tab
 # each job section ends with a link back to the scoreboard
 body = "".join(c.rstrip("\n") + '\n<p class="back"><a href="#scoreboard">&uarr; Back to the scoreboard</a></p>\n'
                if re.match(r'<h2 id="\d+-', c) else c for c in re.split(r'(?=<h2 )', body))
@@ -69,6 +69,7 @@ with open(out / "alt-text.csv", "w", newline="", encoding="utf-8") as f:
 .jev-article hr { border: 0; height: 0; margin: 0; }
 .jev-article .standfirst { font-size: 20px; line-height: 1.55; color: #3B4252; margin: 0 0 30px; }
 .jev-article img { display: block; width: 100%; height: auto; margin: 26px 0; border: 1px solid #E3E6EA; }
+.jev-article { font-family: "Gomme Sans", Roboto, Arial, sans-serif; } /* the theme body font; nested paragraphs otherwise inherit the widget's Roboto */
 .jev-article code { font: 14.5px/1.4 "IBM Plex Mono", Consolas, monospace; background: #F1F3F5; padding: 1px 5px; border-radius: 3px; }
 .jev-article .scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .jev-article table.scoreboard { border-collapse: collapse; width: 100%; font-size: 15px; line-height: 1.4; margin: 18px 0 28px; }
