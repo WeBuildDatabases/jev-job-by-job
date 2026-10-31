@@ -59,9 +59,9 @@ This is not a bug. It is how the tool works: you give it a list of options, and 
 
 Try it yourself, on your own project or research. Jev would like that too.
 
-- The [scoreboard](#scoreboard) shows how Jev did on every job.
-- The [checklist](#a-checklist-before-you-reach-for-jev) helps you see if it fits your job.
-- The [one-shot prompt](#fit-prompt) lets your LLM (ChatGPT, Claude, Gemini) do the checking on your own creation.
+- The **[scoreboard](#scoreboard)** shows how Jev did on every job.
+- The **[checklist](#a-checklist-before-you-reach-for-jev)** helps you see if it fits your job.
+- The **[one-shot prompt](#fit-prompt)** lets your LLM (ChatGPT, Claude, Gemini) do the checking on your own creation.
 
 ## How we tested
 
