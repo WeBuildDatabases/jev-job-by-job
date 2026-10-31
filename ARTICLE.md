@@ -1,6 +1,6 @@
 # Jev, job by job: what it does, what it doesn't, and when to reach for it
 
-*We tested the 21 official TypeSafe cookbooks published as of October 28, 2026, 20 jobs plus images: 307 examples, 27 follow-up checks, 3.3 cents, expected answers locked before the runs (two exceptions, listed below).* ***Bottom line: used correctly, Jev is faster, cheaper, and makes work possible that was too slow or too expensive to try before. Used loosely, it picks the wrong answer with confidence.***
+*We ran Jev through all 21 TypeSafe cookbooks on database work: 307 examples, answers locked in advance, 3.3 cents. It passed 287. The misses are the interesting part.* ***Bottom line: used correctly, Jev is faster, cheaper, and makes work possible that was too slow or too expensive to try before. Used loosely, it picks the wrong answer with confidence.***
 
 ---
 
