@@ -70,7 +70,7 @@ We work on database problems: enriching records, matching duplicates, and findin
 1. **We read the 21 official cookbooks** on docs.typesafe.ai as of October 28, 2026. TypeSafe has since added four more, a shopping-cart recipe and three image recipes; see [What will change](#what-will-change). The two "self-consistency" recipes teach one idea, so we treat them as one job. That gives **20 jobs plus images**.
 2. **We built one test per job, with our own examples.** The cookbooks use trading bots, beer catalogs and Twitch chat. We used CRM syncs, retention policies, company records, Postgres runbooks and invoices. Every company and person is fictional.
 3. **Each test has two kinds of example.** **Core** examples check what the cookbook says Jev does. **Edge** examples deliberately poke at a weakness TypeSafe documents, such as literal reading, math, dates, option order or manipulative text. An edge failure is the documented limit showing up, not a surprise.
-4. **We locked the expected answers before the first paid call**, in three rounds. The hashes, the timestamps and the two exceptions are in the [Method note](#method) at the end.
+4. **We locked the expected answers before the first paid call**, in three rounds. How the locks worked, and the two exceptions, are in the [Method note](#method) at the end.
 5. **We kept code's work separate from Jev's**, pinned the exact model, `jev-1.14.0`, and cached every response, so anyone can replay all of it for free from [the published files](https://github.com/WeBuildDatabases/jev-job-by-job).
 
 **What these results are *not*.** Each job has between 3 and 37 hand-written examples. These are illustrations, not benchmarks, so we say "13 of 15" rather than "87% accurate." Where it matters most (reranking, record matching and "is the answer even here?"), we also cite our earlier tests on public benchmark data with hundreds or thousands of examples.
@@ -971,12 +971,11 @@ Four things will date this article in the ever-changing AI landscape (and it sho
 ## Method
 
 - The scoreboard combines rounds 1 and 2. Round 3 is reported inside the jobs it touched.
-- *Round 1* (192 examples): expected answers were fingerprinted before the first paid call. Combined SHA-256 `c68753b6…16773e78`, at 23:02 UTC on October 28, 2026. Before that lock, an independent reviewer (another AI model, given only the files) attacked our expected answers, and we fixed what it found.
-- *Round 1 was too easy*: 185 of 192 passed. So we wrote *Round 2*, 115 harder "stress" examples aimed squarely at the weaknesses. It was locked at 23:34 UTC (`dbbb7128…f276df41`).
-- *Round 3* tested the two obvious fixes for what Round 2 exposed, locked at 23:37 UTC (`a7f69e84…f1949f6f`).
+- Round 1 had 192 examples. Before Jev saw any of them, the expected answers were locked, and a separate AI model, given only the files, tried to pick holes in them. We fixed what it found.
+- Round 1 was too easy: 185 of 192 passed. So we wrote round 2, 115 harder examples aimed squarely at the known weaknesses, and locked those the same way.
+- Round 3 tested the two obvious fixes for what round 2 exposed, locked the same way.
 - Some outcomes are decided by ordinary code, such as an exact quote match or a calendar calculation. We label those so Jev doesn't get credit, or blame, for them.
-- One analysis was run after locking: the menu-exit-only replay in job 1, which used cached answers.
-- One change was made after locking, for publishing safety. Two test messages contained made-up credentials realistic enough to trip code-hosting secret scanners. We swapped them for obviously fake ones and re-ran both; both still passed (details in [LOCKS.md](https://github.com/WeBuildDatabases/jev-job-by-job/blob/main/tests/results/LOCKS.md)).
+- Two things happened after locking. The menu-exit-only replay in job 1 used cached answers. And two test messages carried made-up credentials realistic enough to trip secret scanners, so we swapped them for obviously fake ones and re-ran both; both still passed. The lock records are in [the published files](https://github.com/WeBuildDatabases/jev-job-by-job).
 
 ## Sources
 
