@@ -23,7 +23,7 @@ body = re.sub(r'<a href="(https?://[^"]+)"', r'<a href="\1" target="_blank" rel=
 body = "".join(c.rstrip("\n") + '\n<p class="back"><a href="#scoreboard">&uarr; Back to the scoreboard</a></p>\n'
                if re.match(r'<h2 id="\d+-', c) else c for c in re.split(r'(?=<h2 )', body))
 # scoreboard: part rows span the table, the total row is marked, numeric cells are tagged
-body = body.replace("<table>", '<table class="scoreboard">', 1)
+body = body.replace("<table>", '<div class="scroll"><table class="scoreboard">', 1).replace("</table>", "</table></div>", 1)  # scrolls sideways on phones instead of widening the page
 body = re.sub(r'<tr>\n<td></td>\n<td>(<strong>Part \d+:.*?</strong>)</td>\n<td></td>\n<td></td>\n<td></td>\n</tr>',
               r'<tr class="part"><td colspan="5">\1</td></tr>', body)
 body = body.replace('<tr>\n<td></td>\n<td><strong>All jobs</strong></td>', '<tr class="total">\n<td></td>\n<td><strong>All jobs</strong></td>')
@@ -70,6 +70,7 @@ with open(out / "alt-text.csv", "w", newline="", encoding="utf-8") as f:
 .jev-article .standfirst { font-size: 20px; line-height: 1.55; color: #3B4252; margin: 0 0 30px; }
 .jev-article img { display: block; width: 100%; height: auto; margin: 26px 0; border: 1px solid #E3E6EA; }
 .jev-article code { font: 14.5px/1.4 "IBM Plex Mono", Consolas, monospace; background: #F1F3F5; padding: 1px 5px; border-radius: 3px; }
+.jev-article .scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .jev-article table.scoreboard { border-collapse: collapse; width: 100%; font-size: 15px; line-height: 1.4; margin: 18px 0 28px; }
 .jev-article table.scoreboard th, .jev-article table.scoreboard td { padding: 9px 10px; border-bottom: 1px solid #E3E6EA; text-align: left; vertical-align: top; }
 .jev-article table.scoreboard th { font-weight: 600; color: #082241; border-bottom: 2px solid #082241; padding-bottom: 8px; }

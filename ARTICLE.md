@@ -159,7 +159,7 @@ Core is what each recipe promises and edge is where it is known to break.
 
 **What it does.** AI agents often have dozens of add-on "skills." Jev looks at the request, shortlists the best three, double-checks them, and suggests one, or none.
 
-**What TypeSafe showed.** The strongest evidence of any cookbook: 182 skills and 488 requests. With Jev's suggestion, the agent loaded the wrong skill 7.3% of the time instead of 16.8%, and loaded a needless skill 4.0% of the time instead of 9.8%.
+**What TypeSafe showed.** The strongest evidence of any cookbook: 194 skills and 452 requests. With Jev's suggestion, the agent loaded the wrong skill 7.9% of the time instead of 15.7%, and loaded a needless skill 5.2% of the time instead of 14.0%.
 
 **What we tried.** A 20-skill toolbox for a data team, including HubSpot sync, Snowflake loading, phone-number cleanup and data-privacy requests. We wrote the requests in everyday language rather than copying each skill's description.
 
@@ -179,7 +179,7 @@ Core is what each recipe promises and edge is where it is known to break.
 - It correctly suggested nothing for small talk, for a concept question ("what's a foreign key?"), and for tools we *don't* have (Pipedrive, Microsoft Dynamics).
 - The one miss was "Load this parquet folder into Redshift," which was matched to the Snowflake loader. The double-check gave it a fit score of 0.34, just over the 0.30 bar the cookbook uses. This is the off-list weakness again, and a slightly stricter bar would have caught it.
 
-**What it doesn't do.** It can only choose among the skills you describe, and a confident wrong suggestion will persuade the agent. TypeSafe's own data shows 7 requests made worse for every 37 fixed.
+**What it doesn't do.** It can only choose among the skills you describe, and a confident wrong suggestion will persuade the agent. TypeSafe's own data shows 7 requests made worse for every 29 fixed.
 
 **Reach for it when** an agent has more tools than it can reliably choose between. Tune the "fits" bar on your own requests.
 
@@ -979,4 +979,4 @@ Four things will date this article in the ever-changing AI landscape (and it sho
 
 ## Sources
 
-*Cookbook figures are TypeSafe's, from docs.typesafe.ai, read on October 28 and re-checked on October 30, 2026. Public-benchmark figures come from our own earlier study (BEIR NFCorpus, FiQA and SciFact; QASPER; DeepMatcher Abt-Buy, Walmart-Amazon and Amazon-Google). All companies, people and documents in our tests are fictional.*
+*Cookbook figures are TypeSafe's, from docs.typesafe.ai, read on October 28 and re-checked on October 31, 2026. Public-benchmark figures come from our own earlier study (BEIR NFCorpus, FiQA and SciFact; QASPER; DeepMatcher Abt-Buy, Walmart-Amazon and Amazon-Google). All companies, people and documents in our tests are fictional.*
