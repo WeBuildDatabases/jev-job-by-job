@@ -73,9 +73,7 @@ We work on database problems: enriching records, matching duplicates, and findin
 
 ## Scoreboard
 
-Rounds 1 and 2 combined. "Core" means the recipe's main promise; "edge" means a documented weakness, pushed on purpose.
-
-If you work with data, start with Parts 4 and 5, then Part 3. Parts 1 and 2 matter once an AI assistant is in the loop.
+Core is what each recipe promises and edge is where it is known to break.
 
 | # | Job | Core | Edge | Our verdict |
 |---|---|---|---|---|
@@ -968,6 +966,7 @@ Four things will date this article in the ever-changing AI landscape (and it sho
 
 ## Method
 
+- The scoreboard combines rounds 1 and 2. Round 3 is reported inside the jobs it touched.
 - *Round 1* (192 examples): expected answers were fingerprinted before the first paid call. Combined SHA-256 `c68753b6…16773e78`, at 23:02 UTC on October 28, 2026. Before that lock, an independent reviewer (another AI model, given only the files) attacked our expected answers, and we fixed what it found.
 - *Round 1 was too easy*: 185 of 192 passed. So we wrote *Round 2*, 115 harder "stress" examples aimed squarely at the weaknesses. It was locked at 23:34 UTC (`dbbb7128…f276df41`).
 - *Round 3* tested the two obvious fixes for what Round 2 exposed, locked at 23:37 UTC (`a7f69e84…f1949f6f`).
